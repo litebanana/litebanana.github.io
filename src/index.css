@@ -8,8 +8,13 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* Night mode: let native controls (scrollbars, inputs) follow the theme */
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-paper font-body text-ink antialiased;
+    @apply bg-paper font-body text-ink antialiased dark:bg-[#0B1220] dark:text-white;
     overflow-x: hidden;
   }
 
@@ -23,7 +28,7 @@
 
   /* Visible, consistent focus state for keyboard users */
   :focus-visible {
-    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-paper rounded-lg;
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-paper rounded-lg dark:ring-offset-[#0B1220];
   }
 
   ::-webkit-scrollbar {
@@ -35,6 +40,9 @@
   ::-webkit-scrollbar-thumb {
     background: #c3d3e2;
     border-radius: 8px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: #2b3b5c;
   }
 }
 
@@ -52,16 +60,16 @@
   }
 
   .btn-outline {
-    @apply btn border-2 border-ink/15 bg-white/70 text-ink hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:translate-y-0 active:scale-95;
+    @apply btn border-2 border-ink/15 bg-white/70 text-ink hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:translate-y-0 active:scale-95 dark:border-white/15 dark:bg-white/5 dark:text-slate-100 dark:hover:border-accent dark:hover:text-accent-bright;
   }
 
   .btn-ghost {
-    @apply btn text-ink hover:-translate-y-0.5 hover:bg-ink/5 active:translate-y-0 active:scale-95;
+    @apply btn text-ink hover:-translate-y-0.5 hover:bg-ink/5 active:translate-y-0 active:scale-95 dark:text-slate-200 dark:hover:bg-white/10;
   }
 
   /* Dashed "editable placeholder" styling used for [PLACEHOLDER] content */
   .placeholder-text {
-    @apply rounded-lg border border-dashed border-ink/25 bg-ink/[0.03] px-2 py-1 font-semibold text-ink-faint;
+    @apply rounded-lg border border-dashed border-ink/25 bg-ink/[0.03] px-2 py-1 font-semibold text-ink-faint dark:border-white/20 dark:bg-white/5 dark:text-slate-400;
   }
 }
 

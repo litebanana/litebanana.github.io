@@ -266,10 +266,10 @@ export function Mascot({
       {bubble && (
         <div
           role="status"
-          className="absolute -top-7 left-1/2 z-20 w-max max-w-[220px] -translate-x-1/2 -translate-y-full animate-pop-in rounded-2xl border-2 border-ink/10 bg-white px-4 py-2 text-sm font-extrabold text-ink shadow-card"
+          className="absolute -top-7 left-1/2 z-20 w-max max-w-[220px] -translate-x-1/2 -translate-y-full animate-pop-in rounded-2xl border-2 border-ink/10 bg-white px-4 py-2 text-sm font-extrabold text-ink shadow-card dark:border-white/20 dark:bg-[#1A2740] dark:text-white"
         >
           {bubble}
-          <span className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-1/2 rotate-45 border-r-2 border-b-2 border-ink/10 bg-white w-3 h-3" />
+          <span className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-1/2 rotate-45 border-r-2 border-b-2 border-ink/10 bg-white w-3 h-3 dark:border-white/20 dark:bg-[#1A2740]" />
         </div>
       )}
     </div>

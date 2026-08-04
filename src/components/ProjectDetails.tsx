@@ -74,10 +74,10 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
       {/* Dialog */}
       <div
         ref={dialogRef}
-        className="relative z-10 max-h-[92vh] w-full max-w-3xl animate-pop-in overflow-y-auto rounded-t-4xl border-2 border-ink/10 bg-paper shadow-lift sm:rounded-4xl"
+        className="relative z-10 max-h-[92vh] w-full max-w-3xl animate-pop-in overflow-y-auto rounded-t-4xl border-2 border-ink/10 bg-paper shadow-lift sm:rounded-4xl dark:border-white/10 dark:bg-[#0E1726]"
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-ink/10 bg-paper/95 px-6 py-4 backdrop-blur-sm sm:px-8">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-ink/10 bg-paper/95 px-6 py-4 backdrop-blur-sm sm:px-8 dark:border-white/10 dark:bg-[#0E1726]/95">
           <div className="flex items-center gap-3">
             <span
               className="rounded-full px-3 py-1 text-xs font-extrabold uppercase tracking-wider"
@@ -85,7 +85,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
             >
               {project.category}
             </span>
-            <h3 id="project-detail-title" className="font-display text-xl font-black text-ink sm:text-2xl">
+            <h3 id="project-detail-title" className="font-display text-xl font-black text-ink sm:text-2xl dark:text-white">
               {project.name}
             </h3>
           </div>
@@ -94,7 +94,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
             type="button"
             onClick={onClose}
             aria-label="Close project details"
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-ink/10 bg-white text-ink transition hover:border-accent hover:text-accent-deep active:scale-90"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-ink/10 bg-white text-ink transition hover:border-accent hover:text-accent-deep active:scale-90 dark:border-white/15 dark:bg-white/10 dark:text-slate-200"
           >
             <CloseIcon className="h-5 w-5" />
           </button>
@@ -112,19 +112,19 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
 
           {/* Problem & Solution */}
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5">
-              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink">
+            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
                 ⚠️ Problem
               </h4>
-              <p className="text-sm font-semibold leading-relaxed text-ink-faint">
+              <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
                 <span className="placeholder-text">{project.problem}</span>
               </p>
             </div>
-            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5">
-              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink">
+            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
                 💡 Solution
               </h4>
-              <p className="text-sm font-semibold leading-relaxed text-ink-faint">
+              <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
                 <span className="placeholder-text">{project.solution}</span>
               </p>
             </div>
@@ -136,7 +136,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
               {project.features.map((feature, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2 rounded-xl border-2 border-ink/5 bg-white px-3.5 py-2.5 text-sm font-bold text-ink-soft"
+                  className="flex items-start gap-2 rounded-xl border-2 border-ink/5 bg-white px-3.5 py-2.5 text-sm font-bold text-ink-soft dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
                 >
                   <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent-tint text-[10px] font-black text-accent-deep">
                     ✓
@@ -153,7 +153,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
               {project.tech.map((tech) => (
                 <li
                   key={tech}
-                  className="rounded-xl border-2 border-ink/10 bg-white px-3.5 py-2 text-sm font-extrabold text-accent-deep"
+                  className="rounded-xl border-2 border-ink/10 bg-white px-3.5 py-2 text-sm font-extrabold text-accent-deep dark:border-white/15 dark:bg-white/5 dark:text-accent-bright"
                 >
                   {tech}
                 </li>
@@ -163,29 +163,29 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
 
           {/* My role & results */}
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5">
-              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink">
+            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
                 👤 My Role
               </h4>
-              <p className="text-sm font-semibold leading-relaxed text-ink-faint">
+              <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
                 <span className="placeholder-text">{project.role}</span>
               </p>
             </div>
-            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5">
-              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink">
+            <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+              <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
                 📈 Results / Outcome
               </h4>
-              <p className="text-sm font-semibold leading-relaxed text-ink-faint">
+              <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
                 <span className="placeholder-text">{project.results}</span>
               </p>
             </div>
           </div>
 
-          <div className="mt-6 flex items-start gap-2 rounded-xl border border-dashed border-ink/20 bg-ink/[0.02] px-4 py-3 text-xs font-bold text-ink-faint">
+          <div className="mt-6 flex items-start gap-2 rounded-xl border border-dashed border-ink/20 bg-ink/[0.02] px-4 py-3 text-xs font-bold text-ink-faint dark:border-white/20 dark:bg-white/5 dark:text-slate-400">
             <PencilIcon className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
               This is an editable placeholder. Replace the [PLACEHOLDER] fields with
-              real details in <code className="rounded bg-white px-1.5 py-0.5 font-mono text-[11px]">src/data/projects.ts</code>.
+              real details in <code className="rounded bg-white px-1.5 py-0.5 font-mono text-[11px] dark:bg-black/40">src/data/projects.ts</code>.
             </span>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mt-6">
-      <h4 className="mb-2.5 font-display text-sm font-black uppercase tracking-wider text-ink">
+      <h4 className="mb-2.5 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
         {label}
       </h4>
       {children}

@@ -1,9 +1,11 @@
 // ---------------------------------------------------------------------------
 // PROJECTS DATA — edit freely
 // ---------------------------------------------------------------------------
-// Only the four projects below should exist. Descriptions, technologies,
-// features and results are marked as [PLACEHOLDER] — replace each one with
-// real details. The `visual` field picks a decorative mockup illustration:
+// Five projects: FitTrack, DomFi, Backroom Game, Home Inventory, GUBAT.
+// DomFi, Home Inventory and GUBAT are filled with real info from Dominic's
+// resume. Fields marked [PLACEHOLDER] are still waiting for real details.
+//
+// The `visual` field picks a decorative mockup illustration:
 //   "phone" | "browser" | "game" | "tablet"
 // ---------------------------------------------------------------------------
 
@@ -54,22 +56,23 @@ export const PROJECTS: Project[] = [
   {
     id: "domfi",
     name: "DomFi",
-    tagline: "Personal Finance Dashboard",
+    tagline: "AI-Powered Personal Finance Management System",
     category: "Web App",
-    description: "[PROJECT DESCRIPTION — add a short pitch for DomFi here]",
+    description:
+      "Full-stack personal finance app to manage budgets, track expenses, monitor savings goals, and analyze spending habits.",
     visual: "browser",
     accent: "#06B6D4",
-    tech: ["[TECHNOLOGY]", "[TECHNOLOGY]", "[TECHNOLOGY]"],
+    tech: ["Node.js", "React", "MongoDB"],
     overview:
-      "[PROJECT OVERVIEW — what is DomFi, who is it for, and what does it do?]",
+      "Full-stack personal finance application that helps users manage budgets, track expenses, monitor savings goals, and analyze spending habits.",
     problem: "[PROBLEM — describe the problem DomFi was built to solve.]",
     solution: "[SOLUTION — describe how DomFi solves the problem.]",
     features: [
-      "[KEY FEATURE 1 — e.g. expense tracking]",
-      "[KEY FEATURE 2 — e.g. monthly summaries]",
-      "[KEY FEATURE 3 — e.g. budgeting views]",
+      "[KEY FEATURE 1 — e.g. budget management]",
+      "[KEY FEATURE 2 — e.g. expense tracking]",
+      "[KEY FEATURE 3 — e.g. spending analytics]",
     ],
-    role: "[MY ROLE — e.g. front-end development, data handling, QA]",
+    role: "[MY ROLE — e.g. front-end development, backend, AI integration]",
     results:
       "[RESULTS / OUTCOME — e.g. what was delivered, what was learned]",
   },
@@ -100,25 +103,48 @@ export const PROJECTS: Project[] = [
   {
     id: "home-inventory",
     name: "Home Inventory",
-    tagline: "Household Inventory Tracker",
-    category: "App",
+    tagline: "Smart Home Asset & Warranty Manager",
+    category: "Mobile App",
     description:
-      "[PROJECT DESCRIPTION — add a short pitch for Home Inventory here]",
+      "Mobile inventory management system for tracking household assets, warranties, receipts, and documents.",
     visual: "tablet",
     accent: "#22C55E",
-    tech: ["[TECHNOLOGY]", "[TECHNOLOGY]", "[TECHNOLOGY]"],
+    tech: ["Flutter", "Dart", "MongoDB"],
     overview:
-      "[PROJECT OVERVIEW — what is Home Inventory, who is it for, and what does it do?]",
+      "Mobile inventory management system that enables users to track household assets, warranties, receipts, and documents.",
     problem:
       "[PROBLEM — describe the problem the app was built to solve.]",
     solution: "[SOLUTION — describe how Home Inventory solves the problem.]",
     features: [
-      "[KEY FEATURE 1 — e.g. item catalog]",
-      "[KEY FEATURE 2 — e.g. categories & search]",
-      "[KEY FEATURE 3 — e.g. quantity tracking]",
+      "[KEY FEATURE 1 — e.g. asset catalog]",
+      "[KEY FEATURE 2 — e.g. warranty & receipt tracking]",
+      "[KEY FEATURE 3 — e.g. document storage]",
     ],
     role: "[MY ROLE — e.g. app design, database, testing]",
     results:
       "[RESULTS / OUTCOME — e.g. what was delivered, what was learned]",
+  },
+  {
+    id: "gubat",
+    name: "GUBAT",
+    tagline: "Random Forest SMS Spam Filter",
+    category: "AI / Machine Learning",
+    description:
+      "ML-powered Android app that detects SMS spam using a Random Forest classifier trained on a localized Taglish dataset.",
+    visual: "phone",
+    accent: "#8B5CF6",
+    tech: ["Python", "Machine Learning", "Android"],
+    overview:
+      "Machine learning-powered Android application for detecting SMS spam using a Random Forest classifier trained on a localized Filipino-English (Taglish) dataset.",
+    problem: "[PROBLEM — describe the SMS spam problem being solved.]",
+    solution: "[SOLUTION — describe how the classifier was built and deployed.]",
+    features: [
+      "[KEY FEATURE 1 — e.g. spam detection]",
+      "[KEY FEATURE 2 — e.g. localized Taglish dataset]",
+      "[KEY FEATURE 3 — e.g. Android app integration]",
+    ],
+    role: "[MY ROLE — e.g. model training, app development, testing]",
+    results:
+      "[RESULTS / OUTCOME — e.g. accuracy achieved, what was learned]",
   },
 ];

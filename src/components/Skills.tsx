@@ -18,11 +18,11 @@ export default function Skills() {
           {SKILL_CATEGORIES.map((category, ci) => (
             <Reveal key={category.title} delay={ci * 80}>
               <div className="mb-4 flex items-center gap-3">
-                <h3 className="font-display text-lg font-black tracking-wide text-ink">
+                <h3 className="font-display text-lg font-black tracking-wide text-ink dark:text-white">
                   {category.title}
                 </h3>
                 <span className="h-1 flex-1 rounded-full bg-gradient-to-r from-accent/30 to-transparent" aria-hidden="true" />
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-ink-faint border-2 border-ink/10">
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-ink-faint border-2 border-ink/10 dark:border-white/15 dark:bg-white/5 dark:text-slate-400">
                   {category.skills.length}
                 </span>
               </div>
@@ -38,7 +38,7 @@ export default function Skills() {
         {/* Mascot with laptop */}
         <div className="mx-auto w-40 lg:sticky lg:top-28 lg:mx-0 sm:w-48">
           <Mascot pose="laptop" looking="center" className="w-full" ariaLabel="Click to hear from Dominic" />
-          <p className="mt-2 text-center text-xs font-bold text-ink-faint">
+          <p className="mt-2 text-center text-xs font-bold text-ink-faint dark:text-slate-500">
             hard at work on the next build
           </p>
         </div>

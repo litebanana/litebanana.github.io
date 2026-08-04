@@ -1,20 +1,20 @@
 // ---------------------------------------------------------------------------
 // EDITABLE LINKS & CONTACT DATA
 // ---------------------------------------------------------------------------
-// Replace the placeholders below with Dominic's real details.
-// Everything on the site reads from this file, so you only edit it once.
+// Update these values and push — the whole site reads from this file.
 // ---------------------------------------------------------------------------
 
 export const LINKS = {
-  // Replace with the real email address, e.g. "dominictorres@gmail.com"
-  email: "hello@dominictorres.dev",
+  // Real contact details
+  email: "dominic.torres2704@gmail.com",
+  linkedin: "https://www.linkedin.com/in/dominic-torres-24028940a/",
+  location: "Based in the Philippines",
 
-  // Replace with real profile URLs
+  // STILL A PLACEHOLDER — add your real GitHub profile URL here
   github: "https://github.com/yourusername",
-  linkedin: "https://www.linkedin.com/in/yourusername",
 
-  // Resume — drop a resume.pdf in /public and set this to "./resume.pdf",
-  // or point it at an external hosted resume.
+  // Resume — drop a resume.pdf in /public and set these to "./resume.pdf"
+  // (or point them at an external hosted resume).
   resumeView: "#",
   resumeDownload: "#",
 } as const;

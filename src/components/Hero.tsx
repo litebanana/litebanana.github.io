@@ -25,26 +25,26 @@ export default function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-6">
           {/* Copy */}
           <div className="text-center lg:text-left">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-xs font-extrabold uppercase tracking-[0.16em] text-ink-soft">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-xs font-extrabold uppercase tracking-[0.16em] text-ink-soft dark:border-white/15 dark:bg-white/10 dark:text-slate-300">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
               </span>
-              Available for opportunities
+              Open to internships & opportunities
             </p>
 
-            <h1 className="font-display text-5xl font-black leading-[1.05] tracking-tight text-ink sm:text-6xl xl:text-7xl">
+            <h1 className="font-display text-5xl font-black leading-[1.05] tracking-tight text-ink sm:text-6xl xl:text-7xl dark:text-white">
               Hi, I&apos;m <span className="text-accent">Dominic.</span>
             </h1>
 
-            <p className="mt-4 font-display text-xl font-extrabold text-ink-soft sm:text-2xl">
+            <p className="mt-4 font-display text-xl font-extrabold text-ink-soft sm:text-2xl dark:text-slate-300">
               Computer Science Student
             </p>
-            <p className="mt-1 text-base font-bold text-ink-faint sm:text-lg">
+            <p className="mt-1 text-base font-bold text-ink-faint sm:text-lg dark:text-slate-400">
               {SITE.tagline}
             </p>
 
-            <p className="mx-auto mt-6 max-w-xl text-base font-semibold leading-relaxed text-ink-soft sm:text-lg lg:mx-0">
+            <p className="mx-auto mt-6 max-w-xl text-base font-semibold leading-relaxed text-ink-soft sm:text-lg lg:mx-0 dark:text-slate-300">
               I&apos;m a Computer Science student who enjoys building applications,
               developing websites, working with AI, and finding bugs that other
               people missed.
@@ -71,7 +71,7 @@ export default function Hero() {
               ariaLabel="Say hi to Dominic"
             />
             {/* speech-bubble-style label */}
-            <div className="pointer-events-none absolute -top-3 left-0 hidden rotate-[-4deg] rounded-2xl border-2 border-ink/10 bg-white px-3 py-1.5 text-xs font-extrabold text-ink shadow-soft sm:block">
+            <div className="pointer-events-none absolute -top-3 left-0 hidden rotate-[-4deg] rounded-2xl border-2 border-ink/10 bg-white px-3 py-1.5 text-xs font-extrabold text-ink shadow-soft sm:block dark:border-white/15 dark:bg-white/10 dark:text-white">
               Welcome! 👋
             </div>
           </div>

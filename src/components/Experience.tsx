@@ -15,7 +15,7 @@ export default function Experience() {
       eyebrow="Experience"
       title="Where I've been learning"
       description="My professional experience so far — hands-on QA work on a real product."
-      className="bg-white"
+      className="bg-white dark:bg-[#0E1726]"
     >
       <div className="grid items-start gap-10 lg:grid-cols-[auto_1fr_auto] lg:gap-8">
         {/* Mascot beside the card */}
@@ -39,20 +39,20 @@ export default function Experience() {
             </span>
 
             <Reveal>
-              <article className="rounded-4xl border-2 border-ink/10 bg-paper p-6 shadow-card transition-shadow duration-300 hover:shadow-lift sm:p-8">
+              <article className="rounded-4xl border-2 border-ink/10 bg-paper p-6 shadow-card transition-shadow duration-300 hover:shadow-lift sm:p-8 dark:border-white/10 dark:bg-[#131D30]">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="rounded-full bg-accent px-4 py-1.5 text-sm font-black uppercase tracking-wider text-white shadow-pop">
                     {exp.role}
                   </span>
-                  <span className="rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-sm font-extrabold text-ink-soft">
+                  <span className="rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-sm font-extrabold text-ink-soft dark:border-white/15 dark:bg-white/5 dark:text-slate-300">
                     {exp.company}
                   </span>
-                  <span className="rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-sm font-extrabold text-ink-faint">
+                  <span className="rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-sm font-extrabold text-ink-faint dark:border-white/15 dark:bg-white/5 dark:text-slate-400">
                     {exp.period}
                   </span>
                 </div>
 
-                <p className="mt-4 text-sm font-semibold leading-relaxed text-ink-soft sm:text-base">
+                <p className="mt-4 text-sm font-semibold leading-relaxed text-ink-soft sm:text-base dark:text-slate-300">
                   {exp.summary}
                 </p>
 
@@ -69,7 +69,7 @@ export default function Experience() {
                       className={`h-4 w-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
                     />
                   </button>
-                  <span className="text-xs font-bold text-ink-faint">
+                  <span className="text-xs font-bold text-ink-faint dark:text-slate-500">
                     {exp.responsibilities.length} focus areas
                   </span>
                 </div>
@@ -83,11 +83,11 @@ export default function Experience() {
                   }}
                 >
                   <div className="overflow-hidden">
-                    <ul className="mt-5 grid gap-2.5 border-t-2 border-dashed border-ink/10 pt-5 sm:grid-cols-2">
+                    <ul className="mt-5 grid gap-2.5 border-t-2 border-dashed border-ink/10 pt-5 sm:grid-cols-2 dark:border-white/10">
                       {exp.responsibilities.map((item) => (
                         <li
                           key={item}
-                          className="flex items-center gap-2.5 rounded-xl border-2 border-ink/5 bg-white px-3.5 py-2.5 text-sm font-bold text-ink-soft"
+                          className="flex items-center gap-2.5 rounded-xl border-2 border-ink/5 bg-white px-3.5 py-2.5 text-sm font-bold text-ink-soft dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
                         >
                           <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent-tint text-accent-deep">
                             <CheckIcon className="h-3 w-3" />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { CloseIcon, MenuIcon } from "./Icons";
+import { CloseIcon, MenuIcon, MoonIcon, SunIcon } from "./Icons";
+import { useTheme } from "../hooks/useTheme";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#home" },
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
+  const { dark, toggle } = useTheme();
 
   // Elevate the bar once the page is scrolled
   useEffect(() => {
@@ -57,10 +59,24 @@ export default function Navbar() {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   }
 
+  const themeButton = (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      title={dark ? "Switch to light mode" : "Switch to dark mode"}
+      className="grid h-11 w-11 place-items-center rounded-xl border-2 border-ink/10 bg-white text-ink transition hover:border-accent hover:text-accent-deep active:scale-90 dark:border-white/15 dark:bg-white/10 dark:text-slate-200 dark:hover:text-accent-bright"
+    >
+      {dark ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
+    </button>
+  );
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? "border-b border-ink/10 bg-paper/85 backdrop-blur-md shadow-soft" : "bg-transparent"
+        scrolled
+          ? "border-b border-ink/10 bg-paper/85 shadow-soft backdrop-blur-md dark:border-white/10 dark:bg-[#0B1220]/85 dark:shadow-black/40"
+          : "bg-transparent"
       }`}
     >
       <nav className="container-site flex h-16 items-center justify-between gap-4 sm:h-20" aria-label="Main navigation">
@@ -71,7 +87,7 @@ export default function Navbar() {
             e.preventDefault();
             navigate("#home");
           }}
-          className="flex items-center gap-2 font-display text-sm font-black tracking-wide text-ink sm:text-base"
+          className="flex items-center gap-2 font-display text-sm font-black tracking-wide text-ink dark:text-white sm:text-base"
         >
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-accent text-xs font-black text-white shadow-pop">
             D
@@ -92,42 +108,48 @@ export default function Navbar() {
               aria-current={active === item.href.slice(1) ? "page" : undefined}
               className={`rounded-xl px-4 py-2 text-sm font-extrabold transition-colors ${
                 active === item.href.slice(1)
-                  ? "bg-accent/10 text-accent-deep"
-                  : "text-ink-soft hover:bg-ink/5 hover:text-ink"
+                  ? "bg-accent/10 text-accent-deep dark:bg-accent/20 dark:text-accent-bright"
+                  : "text-ink-soft hover:bg-ink/5 hover:text-ink dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
               }`}
             >
               {item.label}
             </a>
           ))}
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate("#contact");
-            }}
-            className="btn-primary ml-3 !px-5 !py-2.5"
-          >
-            CONTACT
-          </a>
+          <div className="ml-2 flex items-center gap-2">
+            {themeButton}
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("#contact");
+              }}
+              className="btn-primary !px-5 !py-2.5"
+            >
+              CONTACT
+            </a>
+          </div>
         </div>
 
-        {/* Mobile hamburger */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="grid h-11 w-11 place-items-center rounded-xl border-2 border-ink/10 bg-white text-ink transition hover:border-accent md:hidden"
-        >
-          {open ? <CloseIcon /> : <MenuIcon />}
-        </button>
+        {/* Mobile: theme toggle + hamburger */}
+        <div className="flex items-center gap-2 md:hidden">
+          {themeButton}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="grid h-11 w-11 place-items-center rounded-xl border-2 border-ink/10 bg-white text-ink transition hover:border-accent md:hidden dark:border-white/15 dark:bg-white/10 dark:text-slate-200"
+          >
+            {open ? <CloseIcon /> : <MenuIcon />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
       <div
         id="mobile-menu"
-        className={`fixed inset-x-0 top-16 bottom-0 z-40 flex flex-col bg-paper px-6 pt-6 pb-10 transition-all duration-300 md:hidden ${
+        className={`fixed inset-x-0 top-16 bottom-0 z-40 flex flex-col bg-paper px-6 pt-6 pb-10 transition-all duration-300 md:hidden dark:bg-[#0B1220] ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
@@ -140,7 +162,7 @@ export default function Navbar() {
               navigate(item.href);
             }}
             style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
-            className={`border-b border-ink/5 py-4 font-display text-2xl font-black text-ink transition-all duration-300 ${
+            className={`border-b border-ink/5 py-4 font-display text-2xl font-black text-ink transition-all duration-300 dark:border-white/10 dark:text-white ${
               open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
             }`}
           >
@@ -157,7 +179,7 @@ export default function Navbar() {
         >
           CONTACT
         </a>
-        <p className="mt-auto text-center text-sm font-bold text-ink-faint">
+        <p className="mt-auto text-center text-sm font-bold text-ink-faint dark:text-slate-400">
           © 2026 Dominic Torres
         </p>
       </div>

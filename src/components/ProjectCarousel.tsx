@@ -120,7 +120,7 @@ export default function ProjectCarousel() {
           type="button"
           onClick={() => goTo(index - 1)}
           aria-label="Previous project"
-          className="absolute -left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-2 border-ink/10 bg-white text-ink shadow-soft transition-all hover:scale-110 hover:border-accent hover:text-accent-deep active:scale-95 sm:-left-5 sm:h-12 sm:w-12"
+          className="absolute -left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-2 border-ink/10 bg-white text-ink shadow-soft transition-all hover:scale-110 hover:border-accent hover:text-accent-deep active:scale-95 sm:-left-5 sm:h-12 sm:w-12 dark:border-white/15 dark:bg-white/10 dark:text-slate-200 dark:hover:text-accent-bright"
         >
           <ArrowLeftIcon className="h-5 w-5" />
         </button>
@@ -128,7 +128,7 @@ export default function ProjectCarousel() {
           type="button"
           onClick={() => goTo(index + 1)}
           aria-label="Next project"
-          className="absolute -right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-2 border-ink/10 bg-white text-ink shadow-soft transition-all hover:scale-110 hover:border-accent hover:text-accent-deep active:scale-95 sm:-right-5 sm:h-12 sm:w-12"
+          className="absolute -right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-2 border-ink/10 bg-white text-ink shadow-soft transition-all hover:scale-110 hover:border-accent hover:text-accent-deep active:scale-95 sm:-right-5 sm:h-12 sm:w-12 dark:border-white/15 dark:bg-white/10 dark:text-slate-200 dark:hover:text-accent-bright"
         >
           <ArrowRightIcon className="h-5 w-5" />
         </button>
@@ -150,7 +150,7 @@ export default function ProjectCarousel() {
             className={`h-3 rounded-full transition-all duration-300 ${
               i === index
                 ? "w-9 bg-accent shadow-pop"
-                : "w-3 bg-ink/15 hover:bg-ink/30"
+                : "w-3 bg-ink/15 hover:bg-ink/30 dark:bg-white/20 dark:hover:bg-white/40"
             }`}
           />
         ))}

@@ -8,11 +8,22 @@ export default function SkillIcon({ icon, className = "" }: { icon: Skill["icon"
   const glyph: Record<Skill["icon"], React.ReactNode> = {
     python: <Monogram>Py</Monogram>,
     ts: <Monogram>TS</Monogram>,
+    js: <Monogram>JS</Monogram>,
     php: <Monogram>PHP</Monogram>,
     flutter: <Monogram>Fl</Monogram>,
     dart: <Monogram>Da</Monogram>,
+    node: <Monogram>No</Monogram>,
+    react: <Monogram>Re</Monogram>,
+    tailwind: <Monogram>Tw</Monogram>,
+    express: <Monogram>Ex</Monogram>,
+    vite: <Monogram>Vi</Monogram>,
     html: <Monogram>&lt;/&gt;</Monogram>,
     css: <Monogram>#</Monogram>,
+    mongodb: <Monogram>Mo</Monogram>,
+    mysql: <Monogram>My</Monogram>,
+    fastapi: <Monogram>Fa</Monogram>,
+    qa: <Monogram>QA</Monogram>,
+    pm: <Monogram>PM</Monogram>,
     web: (
       <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
