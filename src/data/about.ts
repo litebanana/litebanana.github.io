@@ -16,11 +16,6 @@ export const EDUCATION: EducationEntry[] = [
     period: "2023 – Present",
     current: true,
   },
-  {
-    school: "Our Lady of Remedios Montessori School",
-    program: "Senior High School – Information and Communications Technology",
-    period: "2020 – 2022",
-  },
 ];
 
 export interface Certification {

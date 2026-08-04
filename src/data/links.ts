@@ -8,10 +8,9 @@ export const LINKS = {
   // Real contact details
   email: "dominic.torres2704@gmail.com",
   linkedin: "https://www.linkedin.com/in/dominic-torres-24028940a/",
+  github: "https://github.com/litebanana",
   location: "Based in the Philippines",
-
-  // STILL A PLACEHOLDER — add your real GitHub profile URL here
-  github: "https://github.com/yourusername",
+  phone: "0960 251 3475",
 
   // Resume — drop a resume.pdf in /public and set these to "./resume.pdf"
   // (or point them at an external hosted resume).

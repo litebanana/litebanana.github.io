@@ -28,9 +28,15 @@ export default function Section({
             {eyebrow}
           </div>
           {title && (
-            <h2 className="font-display text-3xl font-black tracking-tight text-ink sm:text-5xl dark:text-white">
-              {title}
-            </h2>
+            <div>
+              <h2 className="font-display text-3xl font-black tracking-tight text-ink sm:text-5xl dark:text-white">
+                {title}
+              </h2>
+              <span
+                className="mt-3 block h-1.5 w-16 rounded-full bg-gradient-to-r from-accent to-accent-bright"
+                aria-hidden="true"
+              />
+            </div>
           )}
           {description && (
             <p className="mt-4 max-w-2xl text-base font-semibold text-ink-faint sm:text-lg dark:text-slate-400">

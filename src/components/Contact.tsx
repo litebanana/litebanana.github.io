@@ -59,8 +59,7 @@ export default function Contact() {
             </div>
 
             <p className="mt-6 text-xs font-bold text-ink-faint dark:text-slate-500">
-              Email &amp; LinkedIn are set — the GitHub link is still a placeholder; update it in{" "}
-              <code className="rounded bg-white px-1.5 py-0.5 font-mono dark:bg-black/40">src/data/links.ts</code>.
+              📍 {LINKS.location} · 📧 {LINKS.email} · 📱 {LINKS.phone}
             </p>
           </div>
         </div>

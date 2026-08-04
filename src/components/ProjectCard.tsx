@@ -9,6 +9,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, active, onOpen }: ProjectCardProps) {
+  const hasPlaceholders = project.description.startsWith("[");
   return (
     <article
       aria-hidden={!active}
@@ -38,14 +39,18 @@ export default function ProjectCard({ project, active, onOpen }: ProjectCardProp
         </h3>
 
         <p className="mt-2 flex-1 text-sm font-semibold leading-relaxed text-ink-faint sm:text-base">
-          <span className="placeholder-text">{project.description}</span>
+          {hasPlaceholders ? (
+            <span className="placeholder-text">{project.description}</span>
+          ) : (
+            project.description
+          )}
         </p>
 
         {/* Technologies */}
         <ul className="mt-4 flex flex-wrap gap-2" aria-label="Technologies">
-          {project.tech.map((tech) => (
+          {project.tech.map((tech, i) => (
             <li
-              key={tech}
+              key={`${tech}-${i}`}
               className="rounded-lg bg-accent-tint px-2.5 py-1 text-xs font-extrabold text-accent-deep dark:bg-accent/15 dark:text-accent-bright"
             >
               {tech}
@@ -65,13 +70,15 @@ export default function ProjectCard({ project, active, onOpen }: ProjectCardProp
             VIEW PROJECT
             <ArrowRightIcon className="h-4 w-4" />
           </button>
-          <span
-            className="hidden items-center gap-1.5 text-[11px] font-bold text-ink-faint sm:flex dark:text-slate-500"
-            title="Editable placeholder — update in src/data/projects.ts"
-          >
-            <PencilIcon className="h-3.5 w-3.5" />
-            Edit in src/data/projects.ts
-          </span>
+          {hasPlaceholders && (
+            <span
+              className="hidden items-center gap-1.5 text-[11px] font-bold text-ink-faint sm:flex dark:text-slate-500"
+              title="Editable placeholder — update in src/data/projects.ts"
+            >
+              <PencilIcon className="h-3.5 w-3.5" />
+              Edit in src/data/projects.ts
+            </span>
+          )}
         </div>
       </div>
     </article>

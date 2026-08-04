@@ -22,7 +22,7 @@ export default function Footer() {
             href={LINKS.github}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="GitHub (placeholder link)"
+            aria-label="GitHub profile"
             className="grid h-11 w-11 place-items-center rounded-xl border-2 border-ink/10 bg-paper text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:text-accent-bright"
           >
             <GithubIcon />
@@ -31,7 +31,7 @@ export default function Footer() {
             href={LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="LinkedIn (placeholder link)"
+            aria-label="LinkedIn profile"
             className="grid h-11 w-11 place-items-center rounded-xl border-2 border-ink/10 bg-paper text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:text-accent-bright"
           >
             <LinkedinIcon />

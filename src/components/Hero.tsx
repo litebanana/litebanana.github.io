@@ -1,11 +1,17 @@
 import FloatingShape from "./FloatingShape";
 import { Mascot } from "./Character";
-import { ArrowRightIcon, MailIcon } from "./Icons";
-import { SITE } from "../data/links";
+import { ArrowRightIcon, GithubIcon, LinkedinIcon, MailIcon } from "./Icons";
+import { LINKS, SITE } from "../data/links";
 
 function scrollTo(href: string) {
   document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
 }
+
+const HERO_STATS = [
+  { value: "3+", label: "Years coding" },
+  { value: "5", label: "Projects built" },
+  { value: "QA", label: "Intern @ VetAssist" },
+];
 
 export default function Hero() {
   return (
@@ -13,6 +19,11 @@ export default function Hero() {
       id="home"
       className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24"
     >
+      {/* Gradient backdrop */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_15%_0%,rgba(14,165,233,0.12),transparent_70%),radial-gradient(50%_45%_at_90%_10%,rgba(56,189,248,0.10),transparent_70%)]"
+      />
       {/* Decorative shapes */}
       <FloatingShape variant="ring" className="left-[6%] top-28 animate-floaty-slow" />
       <FloatingShape variant="plus" className="right-[10%] top-24 animate-floaty" />
@@ -59,7 +70,44 @@ export default function Hero() {
                 <MailIcon className="h-4 w-4" />
                 CONTACT ME
               </button>
+              <div className="flex items-center gap-2">
+                <a
+                  href={LINKS.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub profile"
+                  className="grid h-11 w-11 place-items-center rounded-2xl border-2 border-ink/15 bg-white text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:scale-95 dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:text-accent-bright"
+                >
+                  <GithubIcon className="h-5 w-5" />
+                </a>
+                <a
+                  href={LINKS.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn profile"
+                  className="grid h-11 w-11 place-items-center rounded-2xl border-2 border-ink/15 bg-white text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:scale-95 dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:text-accent-bright"
+                >
+                  <LinkedinIcon className="h-5 w-5" />
+                </a>
+              </div>
             </div>
+
+            {/* Stat chips */}
+            <dl className="mt-10 grid max-w-md grid-cols-3 gap-3 sm:gap-4 lg:max-w-lg">
+              {HERO_STATS.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col rounded-2xl border-2 border-ink/10 bg-white/80 px-3 py-3 text-center shadow-soft transition-transform duration-300 hover:-translate-y-1 dark:border-white/15 dark:bg-white/5"
+                >
+                  <dt className="order-2 mt-1 text-[10px] font-extrabold uppercase tracking-wider text-ink-faint dark:text-slate-400 sm:text-[11px]">
+                    {stat.label}
+                  </dt>
+                  <dd className="order-1 font-display text-xl font-black text-accent-deep dark:text-accent-bright sm:text-2xl">
+                    {stat.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
           {/* Character */}
