@@ -4,14 +4,14 @@ import { Mascot } from "./Character";
 /**
  * Dominic's portrait.
  *
- * Looks for a real headshot in `public/images/` (drop it in as `profile.jpg`),
- * trying a few common names. Until a photo exists it gracefully falls back to
- * the illustrated mascot so the layout never breaks.
+ * Looks for a real headshot in `public/images/`, trying common names.
+ * Until a photo exists it gracefully falls back to the illustrated mascot
+ * so the layout never breaks.
  */
 const CANDIDATES = [
+  "images/dominic.jpg",
   "images/profile.jpg",
   "images/me.jpg",
-  "images/dominic.jpg",
   "images/photo.jpg",
 ];
 
