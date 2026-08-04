@@ -85,7 +85,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
       {/* Dialog */}
       <div
         ref={dialogRef}
-        className="relative z-10 max-h-[92vh] w-full max-w-3xl animate-pop-in overflow-y-auto rounded-t-4xl border-2 border-ink/10 bg-paper shadow-lift sm:rounded-4xl dark:border-white/10 dark:bg-[#0E1726]"
+        className="relative z-10 max-h-[92vh] w-full max-w-3xl animate-pop-in overflow-y-auto rounded-t-3xl border border-ink/10 bg-paper shadow-lift sm:rounded-3xl dark:border-white/10 dark:bg-[#0E1726]"
       >
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-ink/10 bg-paper/95 px-6 py-4 backdrop-blur-sm sm:px-8 dark:border-white/10 dark:bg-[#0E1726]/95">
@@ -96,7 +96,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
             >
               {project.category}
             </span>
-            <h3 id="project-detail-title" className="font-display text-xl font-black text-ink sm:text-2xl dark:text-white">
+            <h3 id="project-detail-title" className="font-display text-xl font-bold text-ink sm:text-2xl dark:text-white">
               {project.name}
             </h3>
           </div>
@@ -128,7 +128,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {!isPlaceholder(project.problem) && (
                 <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
-                  <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
+                  <h4 className="mb-2 font-display text-sm font-bold uppercase tracking-wider text-ink dark:text-white">
                     ⚠️ Problem
                   </h4>
                   <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
@@ -138,7 +138,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
               )}
               {!isPlaceholder(project.solution) && (
                 <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
-                  <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
+                  <h4 className="mb-2 font-display text-sm font-bold uppercase tracking-wider text-ink dark:text-white">
                     💡 Solution
                   </h4>
                   <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
@@ -189,7 +189,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {!isPlaceholder(project.role) && (
                 <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
-                  <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
+                  <h4 className="mb-2 font-display text-sm font-bold uppercase tracking-wider text-ink dark:text-white">
                     👤 My Role
                   </h4>
                   <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
@@ -199,7 +199,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
               )}
               {!isPlaceholder(project.results) && (
                 <div className="rounded-2xl border-2 border-ink/10 bg-white p-5 dark:border-white/10 dark:bg-white/5">
-                  <h4 className="mb-2 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
+                  <h4 className="mb-2 font-display text-sm font-bold uppercase tracking-wider text-ink dark:text-white">
                     📈 Results / Outcome
                   </h4>
                   <p className="text-sm font-semibold leading-relaxed text-ink-faint dark:text-slate-400">
@@ -229,7 +229,7 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mt-6">
-      <h4 className="mb-2.5 font-display text-sm font-black uppercase tracking-wider text-ink dark:text-white">
+      <h4 className="mb-2.5 font-display text-sm font-bold uppercase tracking-wider text-ink dark:text-white">
         {label}
       </h4>
       {children}

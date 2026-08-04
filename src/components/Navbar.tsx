@@ -87,12 +87,14 @@ export default function Navbar() {
             e.preventDefault();
             navigate("#home");
           }}
-          className="flex items-center gap-2 font-display text-sm font-black tracking-wide text-ink dark:text-white sm:text-base"
+          className="flex items-center gap-2.5"
         >
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-accent text-xs font-black text-white shadow-pop">
-            D
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-deep font-display text-sm font-bold text-white shadow-pop">
+            DT
           </span>
-          DOMINIC TORRES
+          <span className="font-display text-sm font-bold tracking-[0.18em] text-ink dark:text-white sm:text-base">
+            DOMINIC TORRES
+          </span>
         </a>
 
         {/* Desktop links */}
@@ -106,10 +108,10 @@ export default function Navbar() {
                 navigate(item.href);
               }}
               aria-current={active === item.href.slice(1) ? "page" : undefined}
-              className={`rounded-xl px-4 py-2 text-sm font-extrabold transition-colors ${
+              className={`relative border-b-2 px-3.5 py-2 text-xs font-extrabold uppercase tracking-[0.14em] transition-colors ${
                 active === item.href.slice(1)
-                  ? "bg-accent/10 text-accent-deep dark:bg-accent/20 dark:text-accent-bright"
-                  : "text-ink-soft hover:bg-ink/5 hover:text-ink dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+                  ? "border-accent text-accent-deep dark:text-accent-bright"
+                  : "border-transparent text-ink-soft hover:text-ink dark:text-slate-300 dark:hover:text-white"
               }`}
             >
               {item.label}
@@ -162,7 +164,7 @@ export default function Navbar() {
               navigate(item.href);
             }}
             style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
-            className={`border-b border-ink/5 py-4 font-display text-2xl font-black text-ink transition-all duration-300 dark:border-white/10 dark:text-white ${
+            className={`border-b border-ink/5 py-4 font-display text-2xl font-bold text-ink transition-all duration-300 dark:border-white/10 dark:text-white ${
               open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
             }`}
           >

@@ -1,5 +1,5 @@
-import FloatingShape from "./FloatingShape";
-import { Mascot } from "./Character";
+import ProfilePhoto from "./ProfilePhoto";
+import TechBackdrop from "./TechBackdrop";
 import { ArrowRightIcon, GithubIcon, LinkedinIcon, MailIcon } from "./Icons";
 import { LINKS, SITE } from "../data/links";
 
@@ -10,52 +10,46 @@ function scrollTo(href: string) {
 const HERO_STATS = [
   { value: "3+", label: "Years coding" },
   { value: "5", label: "Projects built" },
-  { value: "QA", label: "Intern @ VetAssist" },
+  { value: "4", label: "Certifications" },
 ];
 
 export default function Hero() {
   return (
-    <section
-      id="home"
-      className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-24"
-    >
-      {/* Gradient backdrop */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_15%_0%,rgba(14,165,233,0.12),transparent_70%),radial-gradient(50%_45%_at_90%_10%,rgba(56,189,248,0.10),transparent_70%)]"
-      />
-      {/* Decorative shapes */}
-      <FloatingShape variant="ring" className="left-[6%] top-28 animate-floaty-slow" />
-      <FloatingShape variant="plus" className="right-[10%] top-24 animate-floaty" />
-      <FloatingShape variant="dot" className="left-[14%] top-64 animate-floaty" />
-      <FloatingShape variant="spark" className="right-[22%] top-56 animate-floaty-slow" />
-      <FloatingShape variant="square" className="bottom-10 left-[8%] animate-spin-slow opacity-70" />
-      <FloatingShape variant="circle" className="bottom-24 right-[6%] animate-floaty" />
+    <section id="home" className="relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28">
+      {/* Ambient backdrop */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-grid opacity-70 [mask-image:radial-gradient(75%_60%_at_50%_22%,black,transparent)]" />
+        <div className="absolute -top-24 left-[10%] h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
+        <div className="absolute top-44 -right-24 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-accent/5 blur-3xl" />
+      </div>
+
+      <TechBackdrop />
 
       <div className="container-site relative">
-        <div className="grid items-center gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-6">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
           {/* Copy */}
           <div className="text-center lg:text-left">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-xs font-extrabold uppercase tracking-[0.16em] text-ink-soft dark:border-white/15 dark:bg-white/10 dark:text-slate-300">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+            <p className="inline-flex items-center gap-2.5 rounded-full border border-ink/10 bg-white/80 px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.22em] text-ink-soft shadow-soft backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              Open to internships & opportunities
+              Open to internships &amp; opportunities
             </p>
 
-            <h1 className="font-display text-5xl font-black leading-[1.05] tracking-tight text-ink sm:text-6xl xl:text-7xl dark:text-white">
+            <h1 className="mt-6 font-display text-5xl font-bold leading-[1.04] tracking-tight text-ink sm:text-6xl xl:text-7xl dark:text-white">
               Hi, I&apos;m <span className="text-accent">Dominic.</span>
             </h1>
 
-            <p className="mt-4 font-display text-xl font-extrabold text-ink-soft sm:text-2xl dark:text-slate-300">
-              Computer Science Student
+            <p className="mt-4 font-display text-2xl font-semibold text-ink-soft sm:text-3xl dark:text-slate-200">
+              {SITE.role}
             </p>
-            <p className="mt-1 text-base font-bold text-ink-faint sm:text-lg dark:text-slate-400">
+            <p className="mt-1.5 text-sm font-semibold tracking-wide text-ink-faint sm:text-base dark:text-slate-400">
               {SITE.tagline}
             </p>
 
-            <p className="mx-auto mt-6 max-w-xl text-base font-semibold leading-relaxed text-ink-soft sm:text-lg lg:mx-0 dark:text-slate-300">
+            <p className="mx-auto mt-6 max-w-xl text-base font-medium leading-relaxed text-ink-soft sm:text-lg lg:mx-0 dark:text-slate-300">
               I&apos;m a Computer Science student who enjoys building applications,
               developing websites, working with AI, and finding bugs that other
               people missed.
@@ -76,7 +70,7 @@ export default function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub profile"
-                  className="grid h-11 w-11 place-items-center rounded-2xl border-2 border-ink/15 bg-white text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:scale-95 dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:text-accent-bright"
+                  className="btn-icon"
                 >
                   <GithubIcon className="h-5 w-5" />
                 </a>
@@ -85,24 +79,26 @@ export default function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn profile"
-                  className="grid h-11 w-11 place-items-center rounded-2xl border-2 border-ink/15 bg-white text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:scale-95 dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:text-accent-bright"
+                  className="btn-icon"
                 >
                   <LinkedinIcon className="h-5 w-5" />
                 </a>
               </div>
             </div>
 
-            {/* Stat chips */}
-            <dl className="mt-10 grid max-w-md grid-cols-3 gap-3 sm:gap-4 lg:max-w-lg">
-              {HERO_STATS.map((stat) => (
+            {/* Stats */}
+            <dl className="mx-auto mt-12 flex max-w-md items-center justify-center gap-6 sm:gap-8 lg:mx-0 lg:justify-start">
+              {HERO_STATS.map((stat, i) => (
                 <div
                   key={stat.label}
-                  className="flex flex-col rounded-2xl border-2 border-ink/10 bg-white/80 px-3 py-3 text-center shadow-soft transition-transform duration-300 hover:-translate-y-1 dark:border-white/15 dark:bg-white/5"
+                  className={`flex flex-col items-center gap-1 lg:items-start ${
+                    i > 0 ? "border-l border-ink/10 pl-6 sm:pl-8 dark:border-white/10" : ""
+                  }`}
                 >
-                  <dt className="order-2 mt-1 text-[10px] font-extrabold uppercase tracking-wider text-ink-faint dark:text-slate-400 sm:text-[11px]">
+                  <dt className="order-2 text-[10px] font-extrabold uppercase tracking-[0.18em] text-ink-faint dark:text-slate-400">
                     {stat.label}
                   </dt>
-                  <dd className="order-1 font-display text-xl font-black text-accent-deep dark:text-accent-bright sm:text-2xl">
+                  <dd className="order-1 font-display text-3xl font-bold text-ink dark:text-white">
                     {stat.value}
                   </dd>
                 </div>
@@ -110,17 +106,40 @@ export default function Hero() {
             </dl>
           </div>
 
-          {/* Character */}
-          <div className="relative mx-auto w-full max-w-[300px] sm:max-w-[360px] lg:max-w-[400px]">
-            <Mascot
-              pose="standing"
-              looking="right"
-              className="w-full animate-floaty-slow"
-              ariaLabel="Say hi to Dominic"
+          {/* Portrait */}
+          <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
+            <div
+              aria-hidden="true"
+              className="absolute -inset-8 rounded-[3rem] bg-gradient-to-tr from-accent/25 via-transparent to-accent/10 blur-2xl"
             />
-            {/* speech-bubble-style label */}
-            <div className="pointer-events-none absolute -top-3 left-0 hidden rotate-[-4deg] rounded-2xl border-2 border-ink/10 bg-white px-3 py-1.5 text-xs font-extrabold text-ink shadow-soft sm:block dark:border-white/15 dark:bg-white/10 dark:text-white">
-              Welcome! 👋
+            <div className="relative rounded-[2.25rem] border border-ink/10 bg-white/80 p-3 shadow-lift backdrop-blur dark:border-white/10 dark:bg-white/5">
+              <div className="overflow-hidden rounded-[1.75rem]">
+                <ProfilePhoto
+                  className="aspect-[4/5] w-full"
+                  alt="Dominic Torres — Computer Science Student"
+                />
+              </div>
+
+              {/* Floating context badges */}
+              <div className="absolute -left-3 top-10 hidden animate-floaty-slow rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-left-6 dark:border-white/10 dark:bg-[#16213E]/95">
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-ink-faint dark:text-slate-400">
+                  Currently
+                </p>
+                <p className="font-display text-sm font-bold text-ink dark:text-white">
+                  QA Intern @ VetAssist
+                </p>
+              </div>
+              <div
+                className="absolute -right-3 bottom-16 hidden animate-floaty rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-right-6 dark:border-white/10 dark:bg-[#16213E]/95"
+                style={{ animationDelay: "1.2s" }}
+              >
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-ink-faint dark:text-slate-400">
+                  Studying
+                </p>
+                <p className="font-display text-sm font-bold text-ink dark:text-white">
+                  B.S. Computer Science
+                </p>
+              </div>
             </div>
           </div>
         </div>

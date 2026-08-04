@@ -1,6 +1,5 @@
 import Section from "./Section";
 import Reveal from "./Reveal";
-import { Mascot } from "./Character";
 import { SKILL_CATEGORIES } from "../data/skills";
 import SkillCard from "./SkillCard";
 
@@ -12,13 +11,11 @@ export default function Skills() {
       title="What I work with"
       description="Years of hands-on experience with the tools I use — not percentages, just the time I've actually spent building."
     >
-      <div className="grid items-start gap-10 lg:grid-cols-[1fr_auto] lg:gap-8">
-        {/* Categories */}
-        <div className="flex flex-col gap-10 min-w-0">
+      <div className="flex flex-col gap-10">
           {SKILL_CATEGORIES.map((category, ci) => (
             <Reveal key={category.title} delay={ci * 80}>
               <div className="mb-4 flex items-center gap-3">
-                <h3 className="font-display text-lg font-black tracking-wide text-ink dark:text-white">
+                <h3 className="font-display text-lg font-bold tracking-wide text-ink dark:text-white">
                   {category.title}
                 </h3>
                 <span className="h-1 flex-1 rounded-full bg-gradient-to-r from-accent/30 to-transparent" aria-hidden="true" />
@@ -33,15 +30,6 @@ export default function Skills() {
               </div>
             </Reveal>
           ))}
-        </div>
-
-        {/* Mascot with laptop */}
-        <div className="mx-auto w-40 lg:sticky lg:top-28 lg:mx-0 sm:w-48">
-          <Mascot pose="laptop" looking="center" className="w-full" ariaLabel="Click to hear from Dominic" />
-          <p className="mt-2 text-center text-xs font-bold text-ink-faint dark:text-slate-500">
-            hard at work on the next build
-          </p>
-        </div>
       </div>
     </Section>
   );

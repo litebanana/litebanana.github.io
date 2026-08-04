@@ -3,15 +3,15 @@ import { LINKS, SITE } from "../data/links";
 
 export default function Footer() {
   return (
-    <footer className="border-t-2 border-ink/10 bg-white dark:border-white/10 dark:bg-[#0E1726]">
+    <footer className="border-t border-ink/10 bg-white dark:border-white/10 dark:bg-[#0E1726]">
       <div className="container-site flex flex-col items-center gap-6 py-10 text-center">
         <a
           href="#home"
-          className="font-display text-base font-black tracking-wide text-ink dark:text-white"
+          className="font-display text-base font-bold tracking-[0.16em] text-ink dark:text-white"
         >
           DOMINIC TORRES
         </a>
-        <p className="-mt-3 text-sm font-bold text-ink-faint dark:text-slate-400">
+        <p className="-mt-3 text-sm font-semibold text-ink-faint dark:text-slate-400">
           {SITE.role}
           <span className="mx-2 text-accent">•</span>
           {SITE.tagline}
@@ -45,7 +45,7 @@ export default function Footer() {
           </a>
         </nav>
 
-        <p className="text-xs font-bold text-ink-faint dark:text-slate-500">
+        <p className="text-xs font-semibold text-ink-faint dark:text-slate-500">
           © 2026 Dominic Torres · Built with React, TypeScript &amp; Tailwind CSS
         </p>
       </div>

@@ -52,7 +52,7 @@ export default function SkillIcon({ icon, className = "" }: { icon: Skill["icon"
 
 function Monogram({ children }: { children: React.ReactNode }) {
   return (
-    <span className="font-display text-lg font-black leading-none tracking-tight">
+    <span className="font-display text-lg font-bold leading-none tracking-tight">
       {children}
     </span>
   );

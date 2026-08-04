@@ -2,13 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { PROJECTS } from "../data/projects";
 import ProjectCard from "./ProjectCard";
 import ProjectDetails from "./ProjectDetails";
-import { Mascot } from "./Character";
 import { ArrowLeftIcon, ArrowRightIcon } from "./Icons";
 
 export default function ProjectCarousel() {
   const [index, setIndex] = useState(0);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [cheer, setCheer] = useState(false);
   const [inView, setInView] = useState(false);
   const touchStart = useRef<number | null>(null);
   const regionRef = useRef<HTMLDivElement | null>(null);
@@ -19,12 +17,7 @@ export default function ProjectCarousel() {
     [count]
   );
 
-  const openDetails = useCallback(() => {
-    setDetailsOpen(true);
-    // The mascot celebrates briefly when a project is opened
-    setCheer(true);
-    window.setTimeout(() => setCheer(false), 2800);
-  }, []);
+  const openDetails = useCallback(() => setDetailsOpen(true), []);
 
   const closeDetails = useCallback(() => setDetailsOpen(false), []);
 
@@ -77,17 +70,7 @@ export default function ProjectCarousel() {
   };
 
   return (
-    <div className="grid items-center gap-8 lg:grid-cols-[auto_1fr_auto] lg:gap-4">
-      {/* Mascot — points toward the current project */}
-      <div className="mx-auto w-32 sm:w-40 lg:w-44">
-        <Mascot
-          pose={cheer ? "celebrating" : "pointing"}
-          looking="right"
-          className="w-full"
-          ariaLabel="Click to hear from Dominic"
-        />
-      </div>
-
+    <div className="relative">
       {/* Carousel */}
       <div
         ref={regionRef}
@@ -98,7 +81,7 @@ export default function ProjectCarousel() {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        <div className="overflow-hidden rounded-4xl">
+        <div className="overflow-hidden rounded-3xl">
           <div
             className="carousel-track flex"
             style={{ transform: `translateX(-${index * 100}%)` }}
@@ -134,11 +117,8 @@ export default function ProjectCarousel() {
         </button>
       </div>
 
-      {/* Side accent (keeps grid balanced on desktop) */}
-      <div className="hidden lg:block lg:w-4" aria-hidden="true" />
-
       {/* Dots */}
-      <div className="col-span-full mt-2 flex items-center justify-center gap-2.5" role="tablist" aria-label="Choose project">
+      <div className="mt-6 flex items-center justify-center gap-2.5" role="tablist" aria-label="Choose project">
         {PROJECTS.map((project, i) => (
           <button
             key={project.id}
@@ -156,7 +136,7 @@ export default function ProjectCarousel() {
         ))}
       </div>
 
-      <p className="col-span-full mt-4 text-center text-xs font-bold text-ink-faint">
+      <p className="mt-3 text-center text-xs font-semibold text-ink-faint">
         Use ← → keys or swipe to browse
       </p>
 

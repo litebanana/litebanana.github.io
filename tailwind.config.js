@@ -30,14 +30,14 @@ export default {
         shirtDark: "#0EA5E9",
       },
       fontFamily: {
-        display: ["Nunito", "ui-rounded", "system-ui", "sans-serif"],
-        body: ["Nunito", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
+        body: ["Inter", "system-ui", "-apple-system", "sans-serif"],
       },
       boxShadow: {
-        card: "0 18px 40px -18px rgba(22, 33, 62, 0.22)",
-        lift: "0 26px 50px -20px rgba(14, 165, 233, 0.45)",
-        soft: "0 8px 24px -12px rgba(22, 33, 62, 0.18)",
-        pop: "0 10px 24px -10px rgba(2, 132, 199, 0.55)",
+        card: "0 1px 2px rgba(22, 33, 62, 0.04), 0 18px 40px -18px rgba(22, 33, 62, 0.18)",
+        lift: "0 2px 4px rgba(14, 165, 233, 0.06), 0 26px 50px -20px rgba(14, 165, 233, 0.38)",
+        soft: "0 1px 2px rgba(22, 33, 62, 0.04), 0 10px 24px -12px rgba(22, 33, 62, 0.14)",
+        pop: "0 12px 24px -10px rgba(2, 132, 199, 0.45)",
       },
       borderRadius: {
         "4xl": "2rem",

@@ -13,7 +13,7 @@ export default function ProjectCard({ project, active, onOpen }: ProjectCardProp
   return (
     <article
       aria-hidden={!active}
-      className={`mx-auto flex h-full w-full max-w-2xl flex-col overflow-hidden rounded-4xl border-2 border-ink/10 bg-white shadow-card transition-all duration-500 dark:border-white/10 dark:bg-[#131D30] ${
+      className={`mx-auto flex h-full w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-card transition-all duration-500 dark:border-white/10 dark:bg-[#131D30] ${
         active
           ? "scale-100 opacity-100"
           : "pointer-events-none scale-[0.94] opacity-40"
@@ -34,11 +34,11 @@ export default function ProjectCard({ project, active, onOpen }: ProjectCardProp
           </span>
         </div>
 
-        <h3 className="mt-4 font-display text-3xl font-black tracking-tight text-ink sm:text-4xl dark:text-white">
+        <h3 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink sm:text-4xl dark:text-white">
           {project.name}
         </h3>
 
-        <p className="mt-2 flex-1 text-sm font-semibold leading-relaxed text-ink-faint sm:text-base">
+        <p className="mt-2 flex-1 text-sm font-medium leading-relaxed text-ink-faint sm:text-base">
           {hasPlaceholders ? (
             <span className="placeholder-text">{project.description}</span>
           ) : (

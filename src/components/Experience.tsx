@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Section from "./Section";
 import Reveal from "./Reveal";
-import { Mascot } from "./Character";
 import { EXPERIENCE } from "../data/experience";
 import { CheckIcon, ChevronDownIcon } from "./DetailIcons";
 
@@ -17,14 +16,7 @@ export default function Experience() {
       description="My professional experience so far — hands-on QA work on a real product."
       className="bg-white dark:bg-[#0E1726]"
     >
-      <div className="grid items-start gap-10 lg:grid-cols-[auto_1fr_auto] lg:gap-8">
-        {/* Mascot beside the card */}
-        <div className="mx-auto w-32 sm:w-36 lg:mx-0">
-          <Mascot pose="standing" looking="right" className="w-full" ariaLabel="Click to hear from Dominic" />
-        </div>
-
-        {/* Timeline */}
-        <div className="relative min-w-0">
+      <div className="relative mx-auto max-w-3xl">
           <div className="relative pl-8 sm:pl-10">
             {/* vertical rail */}
             <span
@@ -39,20 +31,21 @@ export default function Experience() {
             </span>
 
             <Reveal>
-              <article className="rounded-4xl border-2 border-ink/10 bg-paper p-6 shadow-card transition-shadow duration-300 hover:shadow-lift sm:p-8 dark:border-white/10 dark:bg-[#131D30]">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-accent px-4 py-1.5 text-sm font-black uppercase tracking-wider text-white shadow-pop">
+              <article className="rounded-3xl border border-ink/10 bg-paper p-6 shadow-card transition-shadow duration-300 hover:shadow-lift sm:p-8 dark:border-white/10 dark:bg-[#131D30]">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <h3 className="font-display text-2xl font-bold tracking-tight text-ink dark:text-white">
                     {exp.role}
-                  </span>
-                  <span className="rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-sm font-extrabold text-ink-soft dark:border-white/15 dark:bg-white/5 dark:text-slate-300">
+                  </h3>
+                  <span className="text-ink-faint dark:text-slate-500">·</span>
+                  <span className="text-sm font-bold text-ink-soft dark:text-slate-300">
                     {exp.company}
                   </span>
-                  <span className="rounded-full border-2 border-ink/10 bg-white px-4 py-1.5 text-sm font-extrabold text-ink-faint dark:border-white/15 dark:bg-white/5 dark:text-slate-400">
+                  <span className="ml-auto rounded-full border border-ink/10 bg-white px-3 py-1 text-xs font-extrabold text-ink-faint dark:border-white/15 dark:bg-white/5 dark:text-slate-400">
                     {exp.period}
                   </span>
                 </div>
 
-                <p className="mt-4 text-sm font-semibold leading-relaxed text-ink-soft sm:text-base dark:text-slate-300">
+                <p className="mt-3.5 text-sm font-medium leading-relaxed text-ink-soft sm:text-base dark:text-slate-300">
                   {exp.summary}
                 </p>
 
@@ -101,9 +94,6 @@ export default function Experience() {
               </article>
             </Reveal>
           </div>
-        </div>
-
-        <div className="hidden lg:block lg:w-4" aria-hidden="true" />
       </div>
     </Section>
   );
