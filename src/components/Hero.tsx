@@ -121,16 +121,26 @@ export default function Hero() {
               </div>
 
               {/* Floating context badges */}
-              <div
-                className="absolute -bottom-4 right-0 hidden animate-floaty rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-right-2 dark:border-white/10 dark:bg-[#16213E]/95"
-                style={{ animationDelay: "1.2s" }}
-              >
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-ink-faint dark:text-slate-400">
-                  Studying
-                </p>
-                <p className="font-display text-sm font-bold text-ink dark:text-white">
-                  B.S. Computer Science
-                </p>
+              <div className="absolute -bottom-16 right-0 hidden sm:block lg:-right-2">
+                <div className="relative animate-floaty" style={{ animationDelay: "1.2s" }}>
+                  {/* Subtle connector linking the badge to the photo edge */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-[1.15rem] right-[3.6rem] h-2 w-2 rounded-full bg-accent/70 ring-4 ring-accent/15"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-[1.15rem] right-[3.7rem] h-[1.15rem] w-px bg-gradient-to-b from-accent/60 to-accent/25"
+                  />
+                  <div className="rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur dark:border-white/10 dark:bg-[#16213E]/95">
+                    <p className="text-[10px] font-extrabold uppercase tracking-widest text-ink-faint dark:text-slate-400">
+                      Studying
+                    </p>
+                    <p className="font-display text-sm font-bold text-ink dark:text-white">
+                      B.S. Computer Science
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
