@@ -122,7 +122,7 @@ export default function Hero() {
 
               {/* Floating context badges */}
               <div
-                className="absolute -right-3 bottom-16 hidden animate-floaty rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-right-6 dark:border-white/10 dark:bg-[#16213E]/95"
+                className="absolute -bottom-4 right-0 hidden animate-floaty rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-right-2 dark:border-white/10 dark:bg-[#16213E]/95"
                 style={{ animationDelay: "1.2s" }}
               >
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-ink-faint dark:text-slate-400">
