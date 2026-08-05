@@ -15,7 +15,7 @@ const HERO_STATS = [
 
 export default function Hero() {
   return (
-    <section id="home" className="relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28">
+    <section id="home" className="relative overflow-hidden pt-32 pb-24 sm:pt-40 sm:pb-32">
       {/* Ambient backdrop */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grid opacity-70 [mask-image:radial-gradient(75%_60%_at_50%_22%,black,transparent)]" />
@@ -27,7 +27,7 @@ export default function Hero() {
       <TechBackdrop />
 
       <div className="container-site relative">
-        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
+        <div className="grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           {/* Copy */}
           <div className="text-center lg:text-left">
             <p className="inline-flex items-center gap-2.5 rounded-full border border-ink/10 bg-white/80 px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.22em] text-ink-soft shadow-soft backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
@@ -38,24 +38,24 @@ export default function Hero() {
               Open to internships &amp; opportunities
             </p>
 
-            <h1 className="mt-6 font-display text-5xl font-bold leading-[1.04] tracking-tight text-ink sm:text-6xl xl:text-7xl dark:text-white">
+            <h1 className="mt-8 font-display text-5xl font-bold leading-[1.04] tracking-tight text-ink sm:text-6xl xl:text-7xl dark:text-white">
               Hi, I&apos;m <span className="text-accent">Dominic.</span>
             </h1>
 
-            <p className="mt-4 font-display text-2xl font-semibold text-ink-soft sm:text-3xl dark:text-slate-200">
+            <p className="mt-6 font-display text-2xl font-semibold text-ink-soft sm:text-3xl dark:text-slate-200">
               {SITE.role}
             </p>
-            <p className="mt-1.5 text-sm font-semibold tracking-wide text-ink-faint sm:text-base dark:text-slate-400">
+            <p className="mt-3 text-sm font-semibold tracking-wide text-ink-faint sm:text-base dark:text-slate-400">
               {SITE.tagline}
             </p>
 
-            <p className="mx-auto mt-6 max-w-xl text-base font-medium leading-relaxed text-ink-soft sm:text-lg lg:mx-0 dark:text-slate-300">
+            <p className="mx-auto mt-8 max-w-xl text-base font-medium leading-relaxed text-ink-soft sm:text-lg lg:mx-0 dark:text-slate-300">
               I&apos;m a Computer Science student who enjoys building applications,
               developing websites, working with AI, and finding bugs that other
               people missed.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+            <div className="mt-11 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
               <button type="button" onClick={() => scrollTo("#projects")} className="btn-primary">
                 EXPLORE MY WORK
                 <ArrowRightIcon className="h-4 w-4" />
@@ -87,7 +87,7 @@ export default function Hero() {
             </div>
 
             {/* Stats */}
-            <dl className="mx-auto mt-12 flex max-w-md items-center justify-center gap-6 sm:gap-8 lg:mx-0 lg:justify-start">
+            <dl className="mx-auto mt-16 flex max-w-md items-center justify-center gap-6 sm:gap-8 lg:mx-0 lg:justify-start">
               {HERO_STATS.map((stat, i) => (
                 <div
                   key={stat.label}
