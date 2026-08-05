@@ -3,7 +3,7 @@ import { LINKS, SITE } from "../data/links";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-ink/10 bg-white dark:border-white/10 dark:bg-[#0E1726]">
+    <footer className="relative border-t border-ink/10 bg-white dark:border-white/10 dark:bg-[#0E1726]">
       <div className="container-site flex flex-col items-center gap-6 py-10 text-center">
         <a
           href="#home"

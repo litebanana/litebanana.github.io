@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import type { Skill } from "../data/skills";
 import SkillIcon from "./SkillIcon";
 
@@ -5,9 +6,30 @@ interface SkillCardProps {
   skill: Skill;
 }
 
+/**
+ * Tells the Tech Orbit backdrop which technology chip to highlight when this
+ * card is hovered. Cursor-only devices; touch users get the highlight via the
+ * card's own hover styles instead.
+ */
+function highlightOrbit(icon: Skill["icon"], el: HTMLElement | null) {
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+  window.dispatchEvent(
+    new CustomEvent("orbit:highlight", { detail: { icon, el } })
+  );
+}
+
 export default function SkillCard({ skill }: SkillCardProps) {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-ink/10 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift dark:border-white/10 dark:bg-[#131D30] dark:hover:border-accent/60">
+    <div
+      ref={cardRef}
+      onMouseEnter={() => highlightOrbit(skill.icon, cardRef.current)}
+      onMouseLeave={() =>
+        window.dispatchEvent(new CustomEvent("orbit:highlight", { detail: { icon: null } }))
+      }
+      className="group relative overflow-hidden rounded-2xl border border-ink/10 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-lift dark:border-white/10 dark:bg-[#131D30] dark:hover:border-accent/60"
+    >
       {/* accent corner glow on hover */}
       <span
         className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full bg-accent/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"

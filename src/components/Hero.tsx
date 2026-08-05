@@ -107,7 +107,7 @@ export default function Hero() {
           </div>
 
           {/* Portrait */}
-          <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
+          <div className="relative mx-auto w-full max-w-[20rem] lg:max-w-[16.5rem]">
             <div
               aria-hidden="true"
               className="absolute -inset-8 rounded-[3rem] bg-gradient-to-tr from-accent/25 via-transparent to-accent/10 blur-2xl"
@@ -121,14 +121,6 @@ export default function Hero() {
               </div>
 
               {/* Floating context badges */}
-              <div className="absolute -left-3 top-10 hidden animate-floaty-slow rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-left-6 dark:border-white/10 dark:bg-[#16213E]/95">
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-ink-faint dark:text-slate-400">
-                  Currently
-                </p>
-                <p className="font-display text-sm font-bold text-ink dark:text-white">
-                  QA Intern @ VetAssist
-                </p>
-              </div>
               <div
                 className="absolute -right-3 bottom-16 hidden animate-floaty rounded-2xl border border-ink/10 bg-white/95 px-4 py-3 shadow-card backdrop-blur sm:block lg:-right-6 dark:border-white/10 dark:bg-[#16213E]/95"
                 style={{ animationDelay: "1.2s" }}
