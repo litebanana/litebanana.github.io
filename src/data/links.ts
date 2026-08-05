@@ -20,6 +20,6 @@ export const LINKS = {
 
 export const SITE = {
   name: "Dominic Torres",
-  tagline: "Developer • QA Tester • AI Enthusiast",
+  tagline: "Developer • QA Tester",
   role: "Computer Science Student",
 } as const;

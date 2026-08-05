@@ -1,6 +1,6 @@
 # Dominic Torres — Portfolio
 
-A modern, responsive, playful personal portfolio website for **Dominic Torres** — Computer Science Student, Developer, QA Tester, and AI Enthusiast.
+A modern, responsive, playful personal portfolio website for **Dominic Torres** — Computer Science Student, Developer, QA Tester.
 
 Built with **React + TypeScript + Vite + Tailwind CSS** and designed to be deployed **completely free on GitHub Pages** as a static site.
 

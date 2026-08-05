@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Personal portfolio website for Dominic Torres — Computer Science Student, Developer, QA Tester, AI Enthusiast.",
+  "description": "Personal portfolio website for Dominic Torres — Computer Science Student, Developer, QA Tester.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

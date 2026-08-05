@@ -9,7 +9,7 @@ interface Chip {
   label: string;
   /** Base angle on the orbit in degrees (0° = right, clockwise). */
   angle: number;
-  /** Orbit radius as a fraction of the smaller viewport dimension. */
+  /** Radius multiplier on the base orbit ellipse (0.85–1.12). */
   radius: number;
   /** Scroll-driven rotation speed multiplier — each chip moves at its own pace. */
   speed: number;
@@ -24,16 +24,16 @@ interface Chip {
 }
 
 const CHIPS: Chip[] = [
-  { icon: "python", label: "Python", angle: 0, radius: 0.44, speed: 1.0, sway: 6, phase: 0.4, floatDelay: 0, floatDuration: 7, min: "base" },
-  { icon: "ts", label: "TypeScript", angle: 36, radius: 0.47, speed: 1.15, sway: 4, phase: 1.3, floatDelay: 0.8, floatDuration: 8, min: "lg" },
-  { icon: "html", label: "HTML", angle: 72, radius: 0.4, speed: 0.85, sway: 7, phase: 2.1, floatDelay: 0.4, floatDuration: 6.5, min: "lg" },
-  { icon: "css", label: "CSS", angle: 108, radius: 0.46, speed: 1.25, sway: 5, phase: 2.9, floatDelay: 1.2, floatDuration: 7.5, min: "lg" },
-  { icon: "php", label: "PHP", angle: 144, radius: 0.39, speed: 0.9, sway: 8, phase: 3.5, floatDelay: 1.6, floatDuration: 6.8, min: "base" },
-  { icon: "flutter", label: "Flutter", angle: 180, radius: 0.48, speed: 1.05, sway: 4, phase: 4.1, floatDelay: 0.3, floatDuration: 8.2, min: "lg" },
-  { icon: "dart", label: "Dart", angle: 216, radius: 0.41, speed: 0.8, sway: 6, phase: 4.7, floatDelay: 2, floatDuration: 7.2, min: "base" },
-  { icon: "database", label: "Database", angle: 252, radius: 0.45, speed: 1.2, sway: 5, phase: 5.3, floatDelay: 0.6, floatDuration: 6.6, min: "sm" },
-  { icon: "ai", label: "AI / ML", angle: 288, radius: 0.43, speed: 0.95, sway: 7, phase: 5.9, floatDelay: 1, floatDuration: 7.8, min: "base" },
-  { icon: "web", label: "Web Dev", angle: 324, radius: 0.38, speed: 1.1, sway: 5, phase: 0.9, floatDelay: 2.4, floatDuration: 6.9, min: "sm" },
+  { icon: "python", label: "Python", angle: 0, radius: 1.0, speed: 1.0, sway: 6, phase: 0.4, floatDelay: 0, floatDuration: 7, min: "base" },
+  { icon: "ts", label: "TypeScript", angle: 36, radius: 1.1, speed: 1.15, sway: 4, phase: 1.3, floatDelay: 0.8, floatDuration: 8, min: "lg" },
+  { icon: "html", label: "HTML", angle: 72, radius: 0.9, speed: 0.85, sway: 7, phase: 2.1, floatDelay: 0.4, floatDuration: 6.5, min: "lg" },
+  { icon: "css", label: "CSS", angle: 108, radius: 1.08, speed: 1.25, sway: 5, phase: 2.9, floatDelay: 1.2, floatDuration: 7.5, min: "lg" },
+  { icon: "php", label: "PHP", angle: 144, radius: 0.88, speed: 0.9, sway: 8, phase: 3.5, floatDelay: 1.6, floatDuration: 6.8, min: "base" },
+  { icon: "flutter", label: "Flutter", angle: 180, radius: 1.12, speed: 1.05, sway: 4, phase: 4.1, floatDelay: 0.3, floatDuration: 8.2, min: "lg" },
+  { icon: "dart", label: "Dart", angle: 216, radius: 0.95, speed: 0.8, sway: 6, phase: 4.7, floatDelay: 2, floatDuration: 7.2, min: "base" },
+  { icon: "database", label: "Database", angle: 252, radius: 1.05, speed: 1.2, sway: 5, phase: 5.3, floatDelay: 0.6, floatDuration: 6.6, min: "sm" },
+  { icon: "ai", label: "AI / ML", angle: 288, radius: 0.98, speed: 0.95, sway: 7, phase: 5.9, floatDelay: 1, floatDuration: 7.8, min: "base" },
+  { icon: "web", label: "Web Dev", angle: 324, radius: 0.85, speed: 1.1, sway: 5, phase: 0.9, floatDelay: 2.4, floatDuration: 6.9, min: "sm" },
 ];
 
 const ICON_INDEX = new Map<Skill["icon"], number>(CHIPS.map((chip, i) => [chip.icon, i]));
@@ -49,15 +49,23 @@ function visibilityClass(min: Breakpoint) {
 }
 
 /**
- * Orbit radius scale per breakpoint: the orbit tightens on smaller screens
- * (fewer icons, smaller orbit) so chips hug the edges instead of the content.
+ * Orbit size scale per breakpoint: smaller screens get a slightly tighter
+ * orbit so the chips hug the edges and never crowd the content.
  */
 function radiusScale() {
   const w = window.innerWidth;
-  if (w < 640) return 0.9;
-  if (w < 1024) return 0.95;
+  if (w < 640) return 0.92;
+  if (w < 1024) return 0.96;
   return 1;
 }
+
+/**
+ * Base orbit ellipse. Using both viewport dimensions (instead of just the
+ * smaller one) spreads the chips across the full screen edges, making the
+ * background feel airy instead of cramped.
+ */
+const ORBIT_RX = 0.42; // × viewport width
+const ORBIT_RY = 0.38; // × viewport height
 
 /** Default chip pill styling plus the hover treatment. */
 function chipClasses(isHighlighted: boolean) {
@@ -113,7 +121,9 @@ export default function TechBackdrop() {
     setCoarse(mqCoarse.matches);
 
     // Smaller orbit on smaller screens: tighter radius keeps chips closer to the edges.
-    let radiusBase = Math.min(window.innerWidth, window.innerHeight) * radiusScale();
+    const scale = radiusScale();
+    let baseRx = window.innerWidth * ORBIT_RX * scale;
+    let baseRy = window.innerHeight * ORBIT_RY * scale;
     let raf = 0;
     let scrollCurrent = window.scrollY;
 
@@ -122,20 +132,21 @@ export default function TechBackdrop() {
       if (svg) svg.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
     };
 
-    /** Place a single chip on the orbit and remember its screen position. */
-    const place = (i: number, angleDeg: number, radius: number) => {
+    /** Place a single chip on the orbit ellipse and remember its screen position. */
+    const place = (i: number, angleDeg: number, breather: number) => {
       const el = chipEls.current[i];
       if (!el) return;
+      const chip = CHIPS[i];
       const a = angleDeg * DEG;
-      const x = Math.cos(a) * radius;
-      const y = Math.sin(a) * radius;
+      const x = Math.cos(a) * baseRx * chip.radius * breather;
+      const y = Math.sin(a) * baseRy * chip.radius * breather;
       el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%)`;
       screenPos.current[i] = { x: window.innerWidth / 2 + x, y: window.innerHeight / 2 + y };
     };
 
     const placeStatic = () => {
       for (let i = 0; i < CHIPS.length; i++) {
-        place(i, CHIPS[i].angle, radiusBase * CHIPS[i].radius);
+        place(i, CHIPS[i].angle, 1);
       }
     };
 
@@ -152,9 +163,7 @@ export default function TechBackdrop() {
         const chip = CHIPS[i];
         const angle =
           chip.angle + scrollAngle * chip.speed + chip.sway * Math.sin(t * 0.3 + chip.phase);
-        const radius =
-          radiusBase * chip.radius * (1 + 0.045 * Math.sin(t * 0.22 + chip.phase * 1.7));
-        place(i, angle, radius);
+        place(i, angle, 1 + 0.045 * Math.sin(t * 0.22 + chip.phase * 1.7));
       }
 
       // Follow the hovered chip with the tooltip, clamped to the viewport.
@@ -226,7 +235,9 @@ export default function TechBackdrop() {
     };
 
     const onResize = () => {
-      radiusBase = Math.min(window.innerWidth, window.innerHeight) * radiusScale();
+      const s = radiusScale();
+      baseRx = window.innerWidth * ORBIT_RX * s;
+      baseRy = window.innerHeight * ORBIT_RY * s;
       applySvgSize();
     };
 
