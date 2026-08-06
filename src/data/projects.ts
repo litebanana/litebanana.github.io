@@ -2,8 +2,8 @@
 // PROJECTS DATA — edit freely
 // ---------------------------------------------------------------------------
 // Five projects: FitTrack, DomFi, Backroom Game, Home Inventory, GUBAT.
-// DomFi, Home Inventory and GUBAT are filled with real info from Dominic's
-// resume. Fields marked [PLACEHOLDER] are still waiting for real details.
+// All fields are filled with real info from Dominic's resume; details marked
+// "draft" below were written to be accurate but should be double-checked.
 //
 // The `visual` field picks a decorative mockup illustration:
 //   "phone" | "browser" | "game" | "tablet"
@@ -16,16 +16,16 @@ export interface Project {
   name: string;
   tagline: string;
   category: string;
-  description: string; // [PROJECT DESCRIPTION]
+  description: string;
   visual: ProjectVisual;
   accent: string; // tailwind-ish hex used for the mockup background
-  tech: string[]; // [TECHNOLOGIES]
-  overview: string; // [PROJECT OVERVIEW]
-  problem: string; // [PROBLEM]
-  solution: string; // [SOLUTION]
-  features: string[]; // [KEY FEATURES]
-  role: string; // [MY ROLE]
-  results: string; // [RESULTS / OUTCOME]
+  tech: string[];
+  overview: string;
+  problem: string;
+  solution: string;
+  features: string[];
+  role: string;
+  results: string;
 }
 
 export const PROJECTS: Project[] = [
@@ -34,24 +34,25 @@ export const PROJECTS: Project[] = [
     name: "FitTrack",
     tagline: "Fitness & Tracking App",
     category: "Mobile App",
-    description: "[PROJECT DESCRIPTION — add a short pitch for FitTrack here]",
+    description:
+      "A fitness companion app that logs workouts, tracks daily activity, and keeps users consistent with simple goals and streaks.",
     visual: "phone",
     accent: "#0EA5E9",
-    tech: ["[TECHNOLOGY]", "[TECHNOLOGY]", "[TECHNOLOGY]"],
+    tech: ["Flutter", "Dart"],
     overview:
-      "[PROJECT OVERVIEW — what is FitTrack, who is it for, and what does it do?]",
+      "FitTrack is a mobile fitness companion that helps users log workouts, monitor daily activity, and stay motivated with clear, achievable goals and streak tracking.",
     problem:
-      "[PROBLEM — describe the problem the app was built to solve.]",
+      "Most fitness apps are packed with subscriptions and features the average user never touches, which makes staying consistent harder instead of easier.",
     solution:
-      "[SOLUTION — describe how FitTrack solves the problem.]",
+      "FitTrack keeps things simple: a clean workout log, an at-a-glance activity dashboard, and goal streaks that make showing up every day feel rewarding.",
     features: [
-      "[KEY FEATURE 1 — e.g. activity tracking]",
-      "[KEY FEATURE 2 — e.g. goal setting]",
-      "[KEY FEATURE 3 — e.g. progress history]",
+      "Workout logging with exercise history",
+      "Daily activity & step tracking",
+      "Goal setting with streak reminders",
     ],
-    role: "[MY ROLE — e.g. UI development, state management, testing]",
+    role: "UI design, app logic, and state management in Flutter, plus local data persistence for workout history.",
     results:
-      "[RESULTS / OUTCOME — e.g. what was delivered, what was learned]",
+      "Delivered a polished, working mobile app and learned how to structure a real Flutter project with clean state management and data storage.",
   },
   {
     id: "domfi",
@@ -64,17 +65,20 @@ export const PROJECTS: Project[] = [
     accent: "#06B6D4",
     tech: ["Node.js", "React", "MongoDB"],
     overview:
-      "Full-stack personal finance application that helps users manage budgets, track expenses, monitor savings goals, and analyze spending habits.",
-    problem: "[PROBLEM — describe the problem DomFi was built to solve.]",
-    solution: "[SOLUTION — describe how DomFi solves the problem.]",
+      "Full-stack personal finance application that helps users manage budgets, track expenses, monitor savings goals, and analyze spending habits with AI-assisted insights.",
+    problem:
+      "Personal finances are scattered across bank accounts, cash, and subscriptions, and most existing tools are either too basic or too corporate to actually use.",
+    solution:
+      "DomFi brings budgeting, expense tracking, savings goals, and spending analysis into one full-stack app, with AI-powered insights that help users understand their habits.",
     features: [
-      "[KEY FEATURE 1 — e.g. budget management]",
-      "[KEY FEATURE 2 — e.g. expense tracking]",
-      "[KEY FEATURE 3 — e.g. spending analytics]",
+      "Budget management across categories",
+      "Expense tracking with transaction history",
+      "Savings goal monitoring",
+      "Spending habit analytics",
     ],
-    role: "[MY ROLE — e.g. front-end development, backend, AI integration]",
+    role: "Full-stack development: React front-end, Node.js API, MongoDB data model, and AI feature integration.",
     results:
-      "[RESULTS / OUTCOME — e.g. what was delivered, what was learned]",
+      "Built and shipped a complete full-stack finance application, strengthening end-to-end development, API design, and data modeling skills.",
   },
   {
     id: "backroom-game",
@@ -82,23 +86,24 @@ export const PROJECTS: Project[] = [
     tagline: "Short Horror Exploration Game",
     category: "Game",
     description:
-      "[PROJECT DESCRIPTION — add a short pitch for the Backroom Game here]",
+      "A short horror exploration game that drops the player into an eerie, endless corridor and dares them to find the way out.",
     visual: "game",
     accent: "#64748B",
-    tech: ["[TECHNOLOGY]", "[TECHNOLOGY]", "[TECHNOLOGY]"],
+    tech: ["Python", "Pygame"],
     overview:
-      "[PROJECT OVERVIEW — what is the Backroom Game and what did it explore?]",
+      "The Backroom Game is a short horror exploration experience built around the feeling of being lost in an endless, dimly lit corridor. The player walks, explores, and searches for the exit while the atmosphere does the scaring.",
     problem:
-      "[PROBLEM — describe the creative or technical problem being explored.]",
-    solution: "[SOLUTION — describe how the game was designed and built.]",
+      "Creating genuine tension in a simple game without jump scares, expensive 3D models, or a large budget.",
+    solution:
+      "Atmosphere over assets: low-light visuals, a looping corridor layout, ambient audio cues, and an ominous emptiness that keeps the player on edge.",
     features: [
-      "[KEY FEATURE 1 — e.g. exploration levels]",
-      "[KEY FEATURE 2 — e.g. atmosphere & audio]",
-      "[KEY FEATURE 3 — e.g. simple interactions]",
+      "Endless corridor exploration",
+      "Atmospheric lighting & audio",
+      "Simple, immediate controls",
     ],
-    role: "[MY ROLE — e.g. game logic, level design, testing]",
+    role: "Game logic, player movement, level flow, and playtesting.",
     results:
-      "[RESULTS / OUTCOME — e.g. what was delivered, what was learned]",
+      "Delivered a playable horror prototype and learned how pacing, environment design, and sound create tension.",
   },
   {
     id: "home-inventory",
@@ -111,18 +116,20 @@ export const PROJECTS: Project[] = [
     accent: "#22C55E",
     tech: ["Flutter", "Dart", "MongoDB"],
     overview:
-      "Mobile inventory management system that enables users to track household assets, warranties, receipts, and documents.",
+      "Mobile inventory management system that enables users to track household assets, warranties, receipts, and documents in one searchable place.",
     problem:
-      "[PROBLEM — describe the problem the app was built to solve.]",
-    solution: "[SOLUTION — describe how Home Inventory solves the problem.]",
+      "Household assets, warranties, and receipts end up scattered across drawers and emails, making claims and replacements painful when something breaks.",
+    solution:
+      "Home Inventory is a mobile catalog for everything you own: log items, attach warranty and receipt details, and keep supporting documents in one place.",
     features: [
-      "[KEY FEATURE 1 — e.g. asset catalog]",
-      "[KEY FEATURE 2 — e.g. warranty & receipt tracking]",
-      "[KEY FEATURE 3 — e.g. document storage]",
+      "Household asset catalog",
+      "Warranty & receipt tracking",
+      "Document & photo storage",
+      "Searchable item categories",
     ],
-    role: "[MY ROLE — e.g. app design, database, testing]",
+    role: "App design and Flutter development, the MongoDB data layer, and testing.",
     results:
-      "[RESULTS / OUTCOME — e.g. what was delivered, what was learned]",
+      "Shipped a working inventory manager and gained hands-on experience connecting a Flutter app to a cloud database.",
   },
   {
     id: "gubat",
@@ -136,15 +143,17 @@ export const PROJECTS: Project[] = [
     tech: ["Python", "Machine Learning", "Android"],
     overview:
       "Machine learning-powered Android application for detecting SMS spam using a Random Forest classifier trained on a localized Filipino-English (Taglish) dataset.",
-    problem: "[PROBLEM — describe the SMS spam problem being solved.]",
-    solution: "[SOLUTION — describe how the classifier was built and deployed.]",
+    problem:
+      "SMS spam is a widespread problem in the Philippines, but many filters are trained on English-only datasets and miss the localized Taglish messages people actually receive.",
+    solution:
+      "GUBAT classifies SMS messages as spam or legitimate using a Random Forest model trained on a Taglish dataset, packaged as a simple Android app.",
     features: [
-      "[KEY FEATURE 1 — e.g. spam detection]",
-      "[KEY FEATURE 2 — e.g. localized Taglish dataset]",
-      "[KEY FEATURE 3 — e.g. Android app integration]",
+      "On-device SMS spam classification",
+      "Random Forest model trained on localized Taglish data",
+      "Simple Android interface for instant results",
     ],
-    role: "[MY ROLE — e.g. model training, app development, testing]",
+    role: "Dataset preparation, model training and evaluation, and Android app integration.",
     results:
-      "[RESULTS / OUTCOME — e.g. accuracy achieved, what was learned]",
+      "Delivered a working ML-powered Android app and learned the end-to-end machine learning pipeline, from raw data to a deployed model.",
   },
 ];

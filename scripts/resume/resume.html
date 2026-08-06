@@ -1,0 +1,429 @@
+<!doctype html>
+<!-- =====================================================================
+  RESUME SOURCE — edit this file, then run:  npm run resume
+  It renders scripts/resume/resume.html → public/resume.pdf via headless
+  Chrome. Kept in sync with the site: same fonts, same accent colors.
+
+  Things you'll likely want to personalize:
+    • The Summary paragraph
+    • The Projects one-liners (add/remove lines, tweak wording)
+    • Any skill years that change over time
+====================================================================== -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dominic Torres — Resume</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #16213e;
+        --ink-soft: #33415c;
+        --ink-faint: #5b6b85;
+        --accent: #0ea5e9;
+        --accent-deep: #0284c7;
+        --accent-bright: #38bdf8;
+        --rule: #dbe4ee;
+        --chip: #eef5fb;
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      body {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        color: var(--ink);
+        font-size: 9.8px;
+        line-height: 1.52;
+        background: #fff;
+      }
+
+      /* ---------- Layout shell (one A4 page, bleed to the edges) ---------- */
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 0 14mm 12mm;
+        background: #fff;
+      }
+
+      /* ---------- Header band ---------- */
+      .band {
+        background: linear-gradient(135deg, #16213e 0%, #1d2c52 60%, #16324e 100%);
+        color: #fff;
+        margin: 0 -14mm 0;
+        padding: 9mm 14mm 8mm;
+      }
+      .band h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 25px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        line-height: 1.1;
+      }
+      .band .headline {
+        margin-top: 3px;
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent-bright);
+      }
+      .band .headline .dot {
+        color: rgba(255, 255, 255, 0.45);
+        margin: 0 6px;
+      }
+      .band .contact {
+        margin-top: 6px;
+        font-size: 8.6px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.82);
+        letter-spacing: 0.02em;
+      }
+      .band .contact .sep {
+        color: var(--accent);
+        margin: 0 5px;
+      }
+      .band .contact a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* ---------- Section headers ---------- */
+      section {
+        margin-top: 9px;
+      }
+      h2 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent-deep);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      h2::after {
+        content: "";
+        flex: 1;
+        height: 1.4px;
+        background: linear-gradient(to right, var(--accent), rgba(14, 165, 233, 0.12));
+      }
+
+      p.body {
+        color: var(--ink-soft);
+        font-size: 9.6px;
+        line-height: 1.55;
+      }
+
+      /* ---------- Experience / education entries ---------- */
+      .entry {
+        margin-top: 6px;
+      }
+      .entry-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .entry-head h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 10.8px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .entry-head h3 .at {
+        font-weight: 600;
+        color: var(--ink-soft);
+      }
+      .entry-head .date {
+        font-size: 8.8px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        white-space: nowrap;
+      }
+      ul.bullets {
+        margin: 3px 0 0;
+        padding-left: 13px;
+        list-style: none;
+      }
+      ul.bullets li {
+        position: relative;
+        color: var(--ink-soft);
+        padding-left: 4px;
+      }
+      ul.bullets li::before {
+        content: "";
+        position: absolute;
+        left: -11px;
+        top: 5.5px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      /* ---------- Projects one-liners ---------- */
+      .project {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        margin-top: 3.5px;
+      }
+      .project .name {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 9.8px;
+        font-weight: 700;
+        color: var(--ink);
+        white-space: nowrap;
+      }
+      .project .desc {
+        color: var(--ink-soft);
+        font-size: 9.4px;
+      }
+      .project .tech {
+        color: var(--accent-deep);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      /* ---------- Skills ---------- */
+      .skill-line {
+        display: flex;
+        gap: 10px;
+        margin-top: 3.5px;
+        color: var(--ink-soft);
+        font-size: 9.4px;
+      }
+      .skill-line .label {
+        flex: 0 0 26mm;
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 9.2px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink);
+      }
+      .skill-line .label span {
+        color: var(--accent-deep);
+      }
+      .skill-line .items .yrs {
+        color: var(--ink-faint);
+      }
+
+      /* ---------- Certifications ---------- */
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 14px;
+      }
+      .cert {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        margin-top: 3.5px;
+        color: var(--ink-soft);
+        font-size: 9.3px;
+      }
+      .cert strong {
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .cert .year {
+        margin-left: auto;
+        flex-shrink: 0;
+        font-size: 8.4px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        color: var(--accent-deep);
+        background: var(--chip);
+        border-radius: 20px;
+        padding: 1px 7px;
+      }
+
+      .foot {
+        margin-top: 10px;
+        padding-top: 5px;
+        border-top: 1px solid var(--rule);
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        text-align: center;
+      }
+
+      @media print {
+        body {
+          font-size: 9.8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ================= HEADER ================= -->
+      <header class="band">
+        <h1>DOMINIC TORRES</h1>
+        <p class="headline">
+          Computer Science Student<span class="dot">·</span>Developer<span class="dot">·</span>QA Tester
+        </p>
+        <p class="contact">
+          <span>dominic.torres2704@gmail.com</span><span class="sep">|</span>
+          <span>0960 251 3475</span><span class="sep">|</span>
+          <span>Philippines</span><span class="sep">|</span>
+          <span>github.com/litebanana</span><span class="sep">|</span>
+          <span>linkedin.com/in/dominic-torres-24028940a</span>
+        </p>
+      </header>
+
+      <!-- ================= SUMMARY ================= -->
+      <!-- ✏️ Personalize this paragraph. -->
+      <section>
+        <h2>Summary</h2>
+        <p class="body">
+          Computer Science student who enjoys building applications and websites, working with AI,
+          and finding the bugs other people missed. Hands-on QA experience on a real product, plus
+          training across the stack — from Flutter and React to Python and machine learning. Open to
+          internships and opportunities.
+        </p>
+      </section>
+
+      <!-- ================= EDUCATION ================= -->
+      <section>
+        <h2>Education</h2>
+        <div class="entry">
+          <div class="entry-head">
+            <h3>Bachelor of Science in Computer Science</h3>
+            <span class="date">2023 – Present</span>
+          </div>
+          <p class="body" style="margin-top: 1px">
+            Lyceum of the Philippines University – Cavite
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= EXPERIENCE ================= -->
+      <section>
+        <h2>Experience</h2>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3>QA Intern <span class="at">· VetAssist</span></h3>
+            <span class="date">June 2026 – Present</span>
+          </div>
+          <ul class="bullets">
+            <li>Manual software testing, test case execution, and regression testing across feature releases</li>
+            <li>Identify and report functional bugs and UI/UX issues, tracked in Jira</li>
+            <li>Validate features and releases before they ship to users</li>
+          </ul>
+        </div>
+
+        <div class="entry">
+          <div class="entry-head">
+            <h3>IoT Bootcamp Trainee <span class="at">· ACube Technologies Inc.</span></h3>
+            <span class="date">2025</span>
+          </div>
+          <ul class="bullets">
+            <li>Hands-on Internet of Things training: sensors, embedded systems, and hardware–software interfacing</li>
+            <li>Built connected-device projects and worked with real sensor data</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= PROJECTS ================= -->
+      <!-- ✏️ Add, remove, or reword these one-liners. -->
+      <section>
+        <h2>Projects</h2>
+
+        <div class="project">
+          <span class="name">GUBAT</span>
+          <span class="desc">Android SMS spam filter using a Random Forest classifier trained on a localized Taglish dataset</span>
+          <span class="tech">· Python · ML · Android</span>
+        </div>
+        <div class="project">
+          <span class="name">DomFi</span>
+          <span class="desc">AI-powered personal finance manager for budgets, expenses, and savings goals</span>
+          <span class="tech">· Node.js · React · MongoDB</span>
+        </div>
+        <div class="project">
+          <span class="name">Home Inventory</span>
+          <span class="desc">Mobile app for tracking household assets, warranties, receipts, and documents</span>
+          <span class="tech">· Flutter · Dart · MongoDB</span>
+        </div>
+        <div class="project">
+          <span class="name">FitTrack</span>
+          <span class="desc">Fitness companion app with workout logging, activity tracking, and goal streaks</span>
+          <span class="tech">· Flutter · Dart</span>
+        </div>
+      </section>
+
+      <!-- ================= SKILLS ================= -->
+      <section>
+        <h2>Technical Skills</h2>
+
+        <div class="skill-line">
+          <span class="label">Development<span>:</span></span>
+          <span class="items">
+            Python <span class="yrs">(3 yrs)</span> · TypeScript <span class="yrs">(1 yr)</span> · JavaScript ·
+            PHP <span class="yrs">(2 yrs)</span> · Flutter <span class="yrs">(2 yrs)</span> · Dart <span class="yrs">(2 yrs)</span> · Node.js
+          </span>
+        </div>
+        <div class="skill-line">
+          <span class="label">Web<span>:</span></span>
+          <span class="items">
+            HTML <span class="yrs">(4 yrs)</span> · CSS <span class="yrs">(3 yrs)</span> · Web Development <span class="yrs">(3 yrs)</span> ·
+            React · Tailwind CSS · Express.js · Vite
+          </span>
+        </div>
+        <div class="skill-line">
+          <span class="label">Data &amp; AI<span>:</span></span>
+          <span class="items">
+            Database <span class="yrs">(2 yrs)</span> · AI / Machine Learning <span class="yrs">(2 yrs)</span> ·
+            MongoDB · MySQL · Python FastAPI
+          </span>
+        </div>
+        <div class="skill-line">
+          <span class="label">QA &amp; Delivery<span>:</span></span>
+          <span class="items">
+            Quality Assurance · Project Management · Test Case Design · Jira
+          </span>
+        </div>
+      </section>
+
+      <!-- ================= CERTIFICATIONS ================= -->
+      <section>
+        <h2>Certifications</h2>
+        <div class="grid2">
+          <div class="cert"><strong>Python Essentials 1</strong> — Cisco Networking Academy <span class="year">2024</span></div>
+          <div class="cert"><strong>Python Essentials 2</strong> — Cisco Networking Academy <span class="year">2024</span></div>
+          <div class="cert"><strong>IoT Bootcamp</strong> — ACube Technologies Inc. <span class="year">2025</span></div>
+          <div class="cert"><strong>Networking Basics</strong> — Cisco <span class="year">2026</span></div>
+        </div>
+      </section>
+
+      <p class="foot">Dominic Torres — Computer Science Student · Developer · QA Tester</p>
+    </div>
+  </body>
+</html>

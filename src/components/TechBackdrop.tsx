@@ -254,13 +254,21 @@ export default function TechBackdrop() {
       return () => window.removeEventListener("resize", onResizeStatic);
     }
 
+    // Pause the animation loop while the tab is hidden to save battery.
+    const onVisibility = () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else raf = requestAnimationFrame(loop);
+    };
+
     window.addEventListener("resize", onResize);
     window.addEventListener("orbit:highlight", onHighlight);
+    document.addEventListener("visibilitychange", onVisibility);
     raf = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orbit:highlight", onHighlight);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 

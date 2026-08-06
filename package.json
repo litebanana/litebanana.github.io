@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "resume": "node scripts/print-resume.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

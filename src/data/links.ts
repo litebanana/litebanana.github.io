@@ -12,10 +12,10 @@ export const LINKS = {
   location: "Based in the Philippines",
   phone: "0960 251 3475",
 
-  // Resume — drop a resume.pdf in /public and set these to "./resume.pdf"
-  // (or point them at an external hosted resume).
-  resumeView: "#",
-  resumeDownload: "#",
+  // Resume — a generated placeholder lives at public/resume.pdf.
+  // Replace that file with your real resume (or point these at a hosted URL).
+  resumeView: "./resume.pdf",
+  resumeDownload: "./resume.pdf",
 } as const;
 
 export const SITE = {
