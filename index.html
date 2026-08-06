@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#F6FAFD" />
+    <link rel="canonical" href="https://litebanana.github.io/" />
+    <meta name="author" content="Dominic Torres" />
     <script>
       // Apply the saved/system theme before first paint to avoid a flash.
       (function () {
@@ -18,6 +20,30 @@
       name="description"
       content="Dominic Torres — Computer Science Student, Developer, QA Tester. Explore my projects, experience, and skills."
     />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Dominic Torres — Portfolio" />
+    <meta property="og:title" content="Dominic Torres — Computer Science Student, Developer, QA Tester" />
+    <meta
+      property="og:description"
+      content="Computer Science student focused on software & web development, QA testing, and AI/ML. Explore my projects, experience, and skills."
+    />
+    <meta property="og:url" content="https://litebanana.github.io/" />
+    <meta property="og:image" content="https://litebanana.github.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dominic Torres — Computer Science Student, Developer, QA Tester" />
+    <meta
+      name="twitter:description"
+      content="Computer Science student focused on software & web development, QA testing, and AI/ML. Explore my projects, experience, and skills."
+    />
+    <meta name="twitter:image" content="https://litebanana.github.io/og-image.png" />
     <link
       rel="icon"
       type="image/svg+xml"
@@ -30,6 +56,40 @@
       rel="stylesheet"
     />
     <title>Dominic Torres — Computer Science Student</title>
+
+    <!-- Structured data: who this site is about -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Dominic Torres",
+        "url": "https://litebanana.github.io/",
+        "image": "https://litebanana.github.io/og-image.png",
+        "jobTitle": "Computer Science Student",
+        "email": "mailto:dominic.torres2704@gmail.com",
+        "telephone": "+63 960 251 3475",
+        "address": { "@type": "PostalAddress", "addressCountry": "PH" },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Lyceum of the Philippines University - Cavite"
+        },
+        "sameAs": [
+          "https://github.com/litebanana",
+          "https://www.linkedin.com/in/dominic-torres-24028940a/"
+        ],
+        "knowsAbout": [
+          "Software Development",
+          "Web Development",
+          "QA Testing",
+          "Machine Learning",
+          "Python",
+          "Flutter",
+          "React",
+          "Node.js",
+          "MongoDB"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

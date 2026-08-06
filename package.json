@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "resume": "node scripts/print-resume.mjs"
+    "resume": "node scripts/print-resume.mjs",
+    "og-image": "node scripts/print-og-image.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
