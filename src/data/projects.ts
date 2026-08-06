@@ -26,6 +26,11 @@ export interface Project {
   features: string[];
   role: string;
   results: string;
+  /** Optional external links — shown as buttons when present. */
+  links?: {
+    repo?: string; // GitHub / source code URL
+    demo?: string; // hosted demo URL
+  };
 }
 
 export const PROJECTS: Project[] = [
@@ -39,6 +44,7 @@ export const PROJECTS: Project[] = [
     visual: "phone",
     accent: "#0EA5E9",
     tech: ["Flutter", "Dart"],
+    links: { repo: "https://github.com/litebanana/fittrack" },
     overview:
       "FitTrack is a mobile fitness companion that helps users log workouts, monitor daily activity, and stay motivated with clear, achievable goals and streak tracking.",
     problem:
@@ -64,6 +70,7 @@ export const PROJECTS: Project[] = [
     visual: "browser",
     accent: "#06B6D4",
     tech: ["Node.js", "React", "MongoDB"],
+    links: { repo: "https://github.com/litebanana/DomFi" },
     overview:
       "Full-stack personal finance application that helps users manage budgets, track expenses, monitor savings goals, and analyze spending habits with AI-assisted insights.",
     problem:
@@ -89,7 +96,8 @@ export const PROJECTS: Project[] = [
       "A short horror exploration game that drops the player into an eerie, endless corridor and dares them to find the way out.",
     visual: "game",
     accent: "#64748B",
-    tech: ["Python", "Pygame"],
+    tech: ["HTML", "CSS", "JavaScript"],
+    links: { repo: "https://github.com/litebanana/backroom-game" },
     overview:
       "The Backroom Game is a short horror exploration experience built around the feeling of being lost in an endless, dimly lit corridor. The player walks, explores, and searches for the exit while the atmosphere does the scaring.",
     problem:
@@ -115,6 +123,7 @@ export const PROJECTS: Project[] = [
     visual: "tablet",
     accent: "#22C55E",
     tech: ["Flutter", "Dart", "MongoDB"],
+    links: { repo: "https://github.com/litebanana/home-inventory" },
     overview:
       "Mobile inventory management system that enables users to track household assets, warranties, receipts, and documents in one searchable place.",
     problem:
