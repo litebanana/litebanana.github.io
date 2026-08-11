@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { ProjectVisual as VisualKind } from "../data/projects";
 
 interface ProjectVisualProps {
@@ -23,7 +24,7 @@ export default function ProjectVisual({ kind, accent, name }: ProjectVisualProps
 
       {kind === "phone" && <PhoneMockup accent={accent} name={name} />}
       {kind === "browser" && <BrowserMockup accent={accent} name={name} />}
-      {kind === "game" && <GameMockup />}
+      {kind === "game" && <GameMockup name={name} accent={accent} />}
       {kind === "tablet" && <TabletMockup accent={accent} name={name} />}
     </div>
   );
@@ -111,7 +112,12 @@ function BrowserMockup({ accent, name }: { accent: string; name: string }) {
   );
 }
 
-function GameMockup() {
+function GameMockup({ name, accent }: { name: string; accent: string }) {
+  // The Backroom Game gets the corridor scene; VOID//RUN gets its own
+  // dungeon-roguelite mockup with a pixel hero, HUD, and boss doorway.
+  if (name.toLowerCase().includes("void")) {
+    return <VoidRunMockup accent={accent} />;
+  }
   return (
     <div aria-hidden="true" className="relative h-40 w-56 overflow-hidden rounded-2xl border-[3px] border-ink bg-[#141d2e] sm:h-44 sm:w-64">
       {/* corridor perspective */}
@@ -131,6 +137,142 @@ function GameMockup() {
       <span className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-bold text-white/50">
         simple exploration experience
       </span>
+    </div>
+  );
+}
+
+/**
+ * Pixel-art dungeon-roguelite mockup for VOID//RUN: a torch-lit brick room,
+ * the pixel hero (Black Rabbit), slime enemies, an HP HUD, a minimap, and
+ * the boss doorway glowing with THE NULL WARDEN's eyes.
+ */
+function VoidRunMockup({ accent }: { accent: string }) {
+  const uid = useId();
+  const brickId = `voidrun-bricks-${uid}`;
+  return (
+    <div
+      aria-hidden="true"
+      className="relative h-40 w-56 overflow-hidden rounded-2xl border-[3px] border-ink bg-[#0e0a1c] sm:h-44 sm:w-64"
+    >
+      {/* dungeon scene */}
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
+        <defs>
+          <pattern id={brickId} width="14" height="7" patternUnits="userSpaceOnUse">
+            <rect width="14" height="7" fill="#241a45" />
+            <rect x="0.5" y="0.5" width="13" height="6" fill="#1b1233" />
+            <rect x="0.5" y="3.5" width="13" height="3" fill="#251b48" />
+          </pattern>
+          <linearGradient id={`wall-${uid}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#120b24" />
+            <stop offset="100%" stopColor="#1b1233" />
+          </linearGradient>
+        </defs>
+
+        {/* back wall */}
+        <rect x="0" y="0" width="100" height="62" fill={`url(#wall-${uid})`} />
+        <rect x="0" y="0" width="100" height="62" fill={`url(#${brickId})`} />
+
+        {/* torches */}
+        <rect x="4" y="30" width="2.5" height="10" fill="#3b2d5e" />
+        <rect x="3.6" y="27" width="3.3" height="3.3" fill={accent} opacity="0.9" />
+        <rect x="93.5" y="30" width="2.5" height="10" fill="#3b2d5e" />
+        <rect x="93.1" y="27" width="3.3" height="3.3" fill={accent} opacity="0.9" />
+
+        {/* boss doorway with void glow */}
+        <rect x="38" y="18" width="24" height="44" fill="#0b0718" />
+        <rect x="37" y="15" width="26" height="4" fill="#4c3b82" />
+        <rect x="40" y="24" width="20" height="38" fill={accent} opacity="0.28" />
+        {/* THE NULL WARDEN eyes */}
+        <rect x="45" y="36" width="4" height="5" fill={accent} />
+        <rect x="51" y="36" width="4" height="5" fill={accent} />
+
+        {/* floor tiles with perspective */}
+        <rect x="0" y="62" width="100" height="38" fill="#120b24" />
+        {[72, 82, 92].map((y, i) => (
+          <rect key={y} x="0" y={y} width="100" height={1.5} fill="#241a45" opacity={0.5 + i * 0.25} />
+        ))}
+        <rect x="0" y="62" width="100" height="1.5" fill="#4c3b82" opacity="0.8" />
+      </svg>
+
+      {/* subtle CRT scanlines for retro game feel */}
+      <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.03)_0px,rgba(255,255,255,0.03)_1px,transparent_1px,transparent_3px)]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/30" />
+
+      {/* HUD: hearts */}
+      <div className="absolute left-2 top-2 flex gap-0.5">
+        {[0, 1, 2].map((i) => (
+          <svg key={i} viewBox="0 0 8 8" className="h-2.5 w-2.5">
+            <path
+              d="M4 6.5 C2.8 5.4 1.2 4.2 1.2 2.9 A1.9 1.9 0 0 1 4 1.6 A1.9 1.9 0 0 1 6.8 2.9 C6.8 4.2 5.2 5.4 4 6.5 Z"
+              fill={i < 2 ? "#f43f5e" : "#1f1437"}
+              stroke={i < 2 ? "#fda4af" : "#3b2d5e"}
+              strokeWidth="0.4"
+            />
+          </svg>
+        ))}
+      </div>
+
+      {/* HUD: HP bar */}
+      <div className="absolute left-2 top-5 flex items-center gap-1">
+        <span className="text-[7px] font-black tracking-widest text-white/70">HP</span>
+        <div className="h-1.5 w-14 overflow-hidden rounded-full border border-white/20 bg-black/50">
+          <div className="h-full w-[70%] rounded-full" style={{ background: accent }} />
+        </div>
+      </div>
+
+      {/* HUD: minimap */}
+      <div className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded border border-white/20 bg-black/50">
+        <svg viewBox="0 0 20 20" className="h-6 w-6">
+          <rect x="2" y="2" width="6" height="6" fill="#241a45" stroke="#4c3b82" strokeWidth="0.8" />
+          <rect x="11" y="2" width="6" height="6" fill="#241a45" stroke="#4c3b82" strokeWidth="0.8" />
+          <rect x="2" y="11" width="6" height="6" fill="#241a45" stroke="#4c3b82" strokeWidth="0.8" />
+          <rect x="11" y="11" width="6" height="6" fill={accent} opacity="0.55" />
+          <rect x="13.5" y="13.5" width="1.5" height="1.5" fill="#fff" />
+        </svg>
+      </div>
+
+      {/* title */}
+      <span className="absolute left-1/2 top-2 -translate-x-1/2 rounded border border-white/20 bg-black/55 px-2 py-0.5 text-[9px] font-black tracking-[0.25em] text-white">
+        VOID//RUN
+      </span>
+
+      {/* pixel hero — Black Rabbit with a sword */}
+      <div className="absolute bottom-2 left-3">
+        <svg viewBox="0 0 14 14" className="h-12 w-12">
+          {/* ears */}
+          <rect x="3" y="0.5" width="2" height="3.5" fill="#7c3aed" />
+          <rect x="8.5" y="0.5" width="2" height="3.5" fill="#7c3aed" />
+          <rect x="3.5" y="1" width="1" height="2.5" fill="#c4b5fd" />
+          <rect x="9" y="1" width="1" height="2.5" fill="#c4b5fd" />
+          {/* head */}
+          <rect x="2" y="4" width="10" height="4.5" fill="#8b5cf6" />
+          <rect x="2" y="5.5" width="10" height="2" fill="#a78bfa" />
+          {/* eyes */}
+          <rect x="4.5" y="5" width="1.5" height="1.5" fill="#0e0a1c" />
+          <rect x="8" y="5" width="1.5" height="1.5" fill="#0e0a1c" />
+          {/* body */}
+          <rect x="3" y="8.5" width="8" height="5" fill="#5b21b6" />
+          <rect x="3" y="10" width="8" height="2" fill="#7c3aed" />
+          {/* sword */}
+          <rect x="11.5" y="6.5" width="1.5" height="6" fill="#e2e8f0" />
+          <rect x="10.5" y="6" width="3.5" height="1" fill="#cbd5e1" />
+          <rect x="10.5" y="4.5" width="1.5" height="2" fill="#8b5cf6" />
+        </svg>
+      </div>
+
+      {/* slime enemies */}
+      <div className="absolute bottom-2 right-4 flex gap-1">
+        <svg viewBox="0 0 10 7" className="h-5 w-7">
+          <path d="M1 6.5 Q1 2 5 2 Q9 2 9 6.5 Z" fill={accent} opacity="0.75" />
+          <rect x="3.2" y="3.4" width="1.4" height="1.4" fill="#0e0a1c" />
+          <rect x="5.6" y="3.4" width="1.4" height="1.4" fill="#0e0a1c" />
+        </svg>
+        <svg viewBox="0 0 10 7" className="mt-1 h-4 w-6">
+          <path d="M1 6.5 Q1 2.5 5 2.5 Q9 2.5 9 6.5 Z" fill={accent} opacity="0.45" />
+          <rect x="3.2" y="3.8" width="1.2" height="1.2" fill="#0e0a1c" />
+          <rect x="5.6" y="3.8" width="1.2" height="1.2" fill="#0e0a1c" />
+        </svg>
+      </div>
     </div>
   );
 }
