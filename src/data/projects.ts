@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // PROJECTS DATA — edit freely
 // ---------------------------------------------------------------------------
-// Five projects: FitTrack, DomFi, Backroom Game, Home Inventory, GUBAT.
+// Five projects: FitTrack, DomFi, Backroom Game, Home Inventory, GUBAT, VOID//RUN.
 // All fields are filled with real info from Dominic's resume; details marked
 // "draft" below were written to be accurate but should be double-checked.
 //
@@ -164,5 +164,33 @@ export const PROJECTS: Project[] = [
     role: "Dataset preparation, model training and evaluation, and Android app integration.",
     results:
       "Delivered a working ML-powered Android app and learned the end-to-end machine learning pipeline, from raw data to a deployed model.",
+  },
+  {
+    id: "voidrun",
+    name: "VOID//RUN",
+    tagline: "2D Pixel-Art Dungeon Roguelite",
+    category: "Game",
+    description:
+      "A complete 2D pixel-art dungeon roguelite built from scratch in vanilla JavaScript. Fight through procedurally generated rooms, collect upgrades, and defeat THE NULL WARDEN.",
+    visual: "game",
+    accent: "#7C3AED",
+    tech: ["HTML", "CSS", "JavaScript"],
+    overview:
+      "VOID//RUN is a fast, readable dungeon roguelite with a pixel-art aesthetic rendered natively at full HD. You are Black Rabbit, a dungeon delver who falls into a corrupted dungeon and must fight waves of monsters, level up with build-defining upgrades, and break THE NULL WARDEN in a multi-phase boss fight.",
+    problem:
+      "Building a complete roguelite with tight combat, meaningful upgrades, and a boss fight without relying on external game engines or libraries.",
+    solution:
+      "A zero-dependency vanilla JavaScript engine with data-driven weapons, enemies, upgrades, and wave budgets, plus procedural room generation and WebAudio synthesis for sound.",
+    features: [
+      "4 data-driven weapons with distinct playstyles",
+      "5 enemy archetypes with modular state-machine AI",
+      "25 in-run upgrades across 4 rarities",
+      "Multi-phase boss fight with telegraphed attacks",
+      "Procedural dungeon generation with 9 rooms",
+      "Permanent progression via Void Shards meta shop",
+    ],
+    role: "Solo development: engine architecture, gameplay systems, procedural generation, combat, UI, audio synthesis, and pixel-art rendering.",
+    results:
+      "Delivered a fully playable, polished roguelite in pure vanilla JS and learned how data-driven design, state machines, and game feel systems combine to create an engaging player experience.",
   },
 ];

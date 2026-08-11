@@ -1,6 +1,6 @@
 import type { Project } from "../data/projects";
 import ProjectVisual from "./ProjectVisual";
-import { ArrowRightIcon, PencilIcon } from "./Icons";
+import { ArrowRightIcon, ExternalIcon, GithubIcon, PencilIcon } from "./Icons";
 
 interface ProjectCardProps {
   project: Project;
@@ -70,6 +70,39 @@ export default function ProjectCard({ project, active, onOpen }: ProjectCardProp
             VIEW PROJECT
             <ArrowRightIcon className="h-4 w-4" />
           </button>
+
+          {/* Direct links to the source / demo when they exist */}
+          {(project.links?.repo || project.links?.demo) && (
+            <div className="flex items-center gap-2">
+              {project.links.repo && (
+                <a
+                  href={project.links.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={active ? 0 : -1}
+                  aria-label={`View ${project.name} source code`}
+                  title="View source code"
+                  className="btn-icon"
+                >
+                  <GithubIcon className="h-5 w-5" />
+                </a>
+              )}
+              {project.links.demo && (
+                <a
+                  href={project.links.demo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={active ? 0 : -1}
+                  aria-label={`Open ${project.name} live demo`}
+                  title="Open live demo"
+                  className="btn-icon"
+                >
+                  <ExternalIcon className="h-5 w-5" />
+                </a>
+              )}
+            </div>
+          )}
+
           {hasPlaceholders && (
             <span
               className="hidden items-center gap-1.5 text-[11px] font-bold text-ink-faint sm:flex dark:text-slate-500"

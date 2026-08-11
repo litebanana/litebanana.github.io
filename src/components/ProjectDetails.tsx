@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Project } from "../data/projects";
 import ProjectVisual from "./ProjectVisual";
-import { CloseIcon, PencilIcon } from "./Icons";
+import { CloseIcon, ExternalIcon, GithubIcon, PencilIcon } from "./Icons";
 
 interface ProjectDetailsProps {
   project: Project;
@@ -181,6 +181,36 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
                   </li>
                 ))}
               </ul>
+            </Section>
+          )}
+
+          {/* Links to source / demo */}
+          {(project.links?.repo || project.links?.demo) && (
+            <Section label="Links">
+              <div className="flex flex-wrap gap-3">
+                {project.links.repo && (
+                  <a
+                    href={project.links.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-outline !px-5 !py-2.5"
+                  >
+                    <GithubIcon className="h-4 w-4" />
+                    VIEW CODE
+                  </a>
+                )}
+                {project.links.demo && (
+                  <a
+                    href={project.links.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary !px-5 !py-2.5"
+                  >
+                    <ExternalIcon className="h-4 w-4" />
+                    LIVE DEMO
+                  </a>
+                )}
+              </div>
             </Section>
           )}
 

@@ -254,11 +254,30 @@ export default function TechBackdrop() {
       return () => window.removeEventListener("resize", onResizeStatic);
     }
 
-    // Pause the animation loop while the tab is hidden to save battery.
-    const onVisibility = () => {
-      if (document.hidden) cancelAnimationFrame(raf);
-      else raf = requestAnimationFrame(loop);
+    const pause = () => cancelAnimationFrame(raf);
+    const resume = () => {
+      raf = requestAnimationFrame(loop);
     };
+
+    // Pause the animation loop while the tab is hidden to save battery.
+    const onVisibility = () => (document.hidden ? pause() : resume());
+
+    // The orbit is a hero backdrop — stop animating entirely once the hero
+    // scrolls out of view, and restart when it comes back.
+    let heroObserver: IntersectionObserver | null = null;
+    const heroEl = document.getElementById("home");
+    if (heroEl && "IntersectionObserver" in window) {
+      heroObserver = new IntersectionObserver(
+        ([entry]) => {
+          // The visibilitychange handler owns hidden-tab behaviour.
+          if (document.hidden) return;
+          if (entry.isIntersecting) resume();
+          else pause();
+        },
+        { threshold: 0 }
+      );
+      heroObserver.observe(heroEl);
+    }
 
     window.addEventListener("resize", onResize);
     window.addEventListener("orbit:highlight", onHighlight);
@@ -269,6 +288,7 @@ export default function TechBackdrop() {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orbit:highlight", onHighlight);
       document.removeEventListener("visibilitychange", onVisibility);
+      heroObserver?.disconnect();
     };
   }, []);
 
