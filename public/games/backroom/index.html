@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Backrooms Delivery Service</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0904">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚪</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --amber: #d9b35c;
+    --amber-dim: #8a6f33;
+    --danger: #c14b3a;
+    --bg: #0a0904;
+    --panel: rgba(10,9,4,0.82);
+  }
+  *{ box-sizing:border-box; touch-action: manipulation; }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%; overflow:hidden;
+    background:#000; font-family:'Share Tech Mono', monospace; color:var(--amber);
+    -webkit-user-select:none; user-select:none;
+    -webkit-touch-callout:none;
+    -webkit-tap-highlight-color:transparent;
+    touch-action: manipulation;
+    overscroll-behavior:none;
+  }
+  #app{ position:relative; width:100vw; height:100vh; touch-action:none; }
+  canvas#gl{ display:block; width:100%; height:100%; touch-action:none; }
+
+  /* ---------- HUD ---------- */
+  #hud{ position:absolute; inset:0; pointer-events:none; }
+  .crosshair{
+    position:absolute; left:50%; top:50%; width:6px; height:6px;
+    transform:translate(-50%,-50%); border-radius:50%;
+    background:rgba(217,179,92,0.55); box-shadow:0 0 4px rgba(217,179,92,0.6);
+  }
+  #vignette{
+    position:absolute; inset:0; pointer-events:none;
+    box-shadow: inset 0 0 180px 60px rgba(0,0,0,0.85);
+    transition: box-shadow 0.4s ease;
+  }
+  #noise-overlay{
+    position:absolute; inset:0; pointer-events:none; opacity:0; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    transition:opacity 0.15s linear;
+  }
+
+  .panel-frame{
+    border:1px solid var(--amber-dim);
+    background:var(--panel);
+    padding:8px 12px;
+    box-shadow:0 0 12px rgba(0,0,0,0.6);
+  }
+
+  #statbox{
+    position:absolute; left:16px; bottom:16px; width:230px;
+    pointer-events:none; font-size:12px; letter-spacing:1px;
+  }
+  .stat-row{ margin-bottom:7px; }
+  .stat-label{ display:flex; justify-content:space-between; margin-bottom:2px; opacity:0.85; }
+  .stat-bar-track{ width:100%; height:7px; background:rgba(217,179,92,0.12); border:1px solid var(--amber-dim); }
+  .stat-bar-fill{ height:100%; background:var(--amber); transition:width 0.25s linear, background 0.3s linear; }
+  .stat-bar-fill.danger{ background:var(--danger); }
+
+  #objective{
+    position:absolute; top:16px; left:16px; max-width:340px;
+    font-size:13px; pointer-events:none;
+  }
+  #objective .eyebrow{ font-size:10px; letter-spacing:3px; opacity:0.65; margin-bottom:3px; }
+  #objective .text{ font-size:14px; line-height:1.4; }
+
+  #prompt{
+    position:absolute; left:50%; top:62%; transform:translate(-50%,0);
+    font-size:14px; letter-spacing:1px; background:var(--panel);
+    border:1px solid var(--amber-dim); padding:6px 14px; opacity:0; transition:opacity 0.2s;
+    pointer-events:none; white-space:nowrap;
+  }
+
+  #radio{
+    position:absolute; top:16px; right:16px; max-width:300px; font-size:12px;
+    background:var(--panel); border:1px solid var(--amber-dim); padding:8px 12px;
+    opacity:0; transform:translateX(12px); transition:opacity 0.4s, transform 0.4s; pointer-events:none;
+    line-height:1.5;
+  }
+  #radio.show{ opacity:1; transform:translateX(0); }
+  #radio .tag{ font-size:10px; letter-spacing:2px; color:var(--danger); margin-bottom:4px;}
+
+  #minimap{
+    position:absolute; right:16px; bottom:16px; width:150px; height:150px;
+    border:1px solid var(--amber-dim); background:rgba(10,9,4,0.7);
+  }
+
+  #invpanel{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:380px; padding:18px 22px; font-size:13px; line-height:1.7;
+    display:none; pointer-events:none;
+  }
+  #invpanel h3{ margin:0 0 10px 0; font-family:'VT323', monospace; font-size:24px; letter-spacing:2px; color:var(--amber); }
+  #invpanel .line{ display:flex; justify-content:space-between; border-bottom:1px dashed var(--amber-dim); padding:3px 0; }
+
+  #keyhints{
+    position:absolute; right:16px; top:16px; font-size:10px; opacity:0.55; text-align:right; line-height:1.6;
+    pointer-events:none;
+  }
+
+  /* ---------- Touch controls (mobile) ---------- */
+  #touch-controls{
+    position:absolute; inset:0; z-index:35; display:none; pointer-events:none;
+  }
+  body.is-mobile #touch-controls{ display:block; }
+
+  #joystick-zone{
+    position:absolute; left:20px; bottom:20px; width:140px; height:140px;
+    border-radius:50%; border:2px solid var(--amber-dim); background:rgba(10,9,4,0.38);
+    touch-action:none; pointer-events:auto;
+  }
+  #joystick-knob{
+    position:absolute; left:50%; top:50%; width:56px; height:56px; margin:-28px 0 0 -28px;
+    border-radius:50%; background:rgba(217,179,92,0.35); border:2px solid var(--amber);
+  }
+
+  #action-cluster{
+    position:absolute; right:18px; bottom:18px; width:200px; height:200px; pointer-events:none;
+  }
+  .tbtn{
+    position:absolute; pointer-events:auto; touch-action:manipulation;
+    font-family:'Share Tech Mono', monospace; color:var(--amber);
+    background:rgba(10,9,4,0.55); border:2px solid var(--amber-dim); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:12px; letter-spacing:0.5px;
+    -webkit-tap-highlight-color:transparent; user-select:none;
+  }
+  .tbtn.active{ background:rgba(217,179,92,0.45); color:#111; }
+  #btn-interact{ width:88px; height:88px; right:0; bottom:0; font-size:15px; }
+  #btn-flash{ width:62px; height:62px; right:6px; bottom:100px; }
+  #btn-sprint{ width:68px; height:68px; right:110px; bottom:6px; font-size:11px; }
+  #btn-crouch{ width:58px; height:58px; right:124px; bottom:104px; font-size:10px; }
+  #btn-beacon{ width:50px; height:50px; right:60px; bottom:170px; font-size:9px; }
+
+  #top-mobile-buttons{
+    position:absolute; top:12px; right:12px; display:flex; gap:7px; pointer-events:none;
+  }
+  .tbtn-sm{
+    pointer-events:auto; touch-action:manipulation;
+    width:42px; height:32px; font-size:9px; letter-spacing:0.5px;
+    font-family:'Share Tech Mono', monospace; color:var(--amber);
+    background:rgba(10,9,4,0.55); border:1px solid var(--amber-dim);
+    display:flex; align-items:center; justify-content:center;
+    -webkit-tap-highlight-color:transparent; user-select:none;
+  }
+  .tbtn-sm.active{ background:rgba(217,179,92,0.45); color:#111; }
+
+  /* Mobile layout repositioning + scaling */
+  body.is-mobile #objective{ max-width:190px; font-size:11px; top:12px; left:12px; padding:6px 9px; }
+  body.is-mobile #objective .text{ font-size:12px; }
+  body.is-mobile #statbox{ bottom:200px; left:14px; width:160px; font-size:10px; padding:6px 9px; }
+  body.is-mobile #minimap{ top:50px; right:12px; bottom:auto; width:84px; height:84px; }
+  body.is-mobile #radio{ top:140px; right:12px; max-width:175px; font-size:10px; padding:6px 9px; }
+  body.is-mobile #keyhints{ display:none; }
+  body.is-mobile #invpanel{ width:88vw; font-size:12px; padding:14px 16px; }
+  body.is-mobile .crosshair{ width:5px; height:5px; }
+
+  body.is-mobile .controls-grid:not(.mobile-only){ display:none; }
+  .controls-grid.mobile-only{ display:none; }
+  body.is-mobile .controls-grid.mobile-only{ display:grid; }
+
+  /* Portrait mode overlay */
+  #portrait-overlay{
+    display:none; position:absolute; inset:0; z-index:100;
+    background:rgba(2,2,0,0.95); align-items:center; justify-content:center;
+    flex-direction:column; text-align:center; padding:24px;
+  }
+  body.is-mobile.portrait #portrait-overlay{ display:flex; }
+  body.is-mobile.portrait #touch-controls{ display:none !important; }
+
+  @media (max-width:480px){
+    .title-main{ font-size:42px !important; }
+    .title-sub{ font-size:10px; letter-spacing:3px; }
+    .overlay p.flavor{ font-size:12px; padding:0 18px; }
+  }
+
+  @media (max-height:480px) and (orientation:landscape){
+    body.is-mobile #statbox{ bottom:120px; left:10px; width:140px; font-size:9px; }
+    body.is-mobile #minimap{ width:70px; height:70px; top:40px; right:10px; }
+    body.is-mobile #radio{ top:110px; right:10px; max-width:150px; font-size:9px; }
+    body.is-mobile #objective{ max-width:160px; font-size:10px; top:10px; left:10px; }
+    #joystick-zone{ width:120px; height:120px; left:14px; bottom:14px; }
+    #joystick-knob{ width:48px; height:48px; margin:-24px 0 0 -24px; }
+    #action-cluster{ right:12px; bottom:12px; width:170px; height:170px; }
+    .tbtn{ font-size:10px; }
+    #btn-interact{ width:72px; height:72px; }
+    #btn-flash{ width:50px; height:50px; bottom:80px; }
+    #btn-sprint{ width:54px; height:54px; }
+    #btn-crouch{ width:46px; height:46px; bottom:84px; }
+    #btn-beacon{ width:40px; height:40px; bottom:140px; }
+  }
+
+  /* ---------- Overlays ---------- */
+  .overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; text-align:center; background:rgba(2,2,0,0.93);
+    z-index:50; padding:16px; overflow-y:auto;
+  }
+  .hidden{ display:none !important; }
+  .title-main{
+    font-family:'VT323', monospace; font-size:64px; letter-spacing:4px; color:var(--amber);
+    text-shadow:0 0 18px rgba(217,179,92,0.5);
+    margin-bottom:0;
+  }
+  .title-sub{ font-size:13px; letter-spacing:6px; opacity:0.6; margin-top:6px; margin-bottom:34px;}
+  .overlay p.flavor{ max-width:520px; font-size:13px; line-height:1.8; opacity:0.8; margin-bottom:30px;}
+  .btn{
+    font-family:'Share Tech Mono', monospace; background:transparent; color:var(--amber);
+    border:1px solid var(--amber); padding:12px 34px; font-size:14px; letter-spacing:3px;
+    cursor:pointer; pointer-events:all; transition:all 0.2s; touch-action:manipulation;
+  }
+  .btn:hover{ background:var(--amber); color:#111; }
+  .controls-grid{
+    display:grid; grid-template-columns:auto auto; gap:4px 22px; font-size:12px;
+    text-align:left; margin-bottom:30px; opacity:0.85;
+  }
+  .controls-grid b{ color:var(--amber); }
+
+  #lost-title{ color:var(--danger); text-shadow:0 0 24px rgba(193,75,58,0.8); }
+  #flash{
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:60;
+  }
+  #flashlight-dust{
+    position:absolute; inset:0; pointer-events:none; z-index:55; opacity:0;
+    background: radial-gradient(ellipse at center, rgba(255,240,200,0.07) 0%, transparent 65%);
+    mix-blend-mode: screen;
+    transition: opacity 0.3s;
+  }
+
+  .diff-btn{ opacity:0.5; border-color: var(--amber-dim); }
+  .diff-btn.active{ opacity:1; background:var(--amber); color:#111; }
+
+  #subtitles{
+    position:absolute; bottom:100px; left:50%; transform:translateX(-50%);
+    font-size:13px; letter-spacing:1px; background:var(--panel);
+    border:1px solid var(--amber-dim); padding:8px 16px; opacity:0;
+    transition:opacity 0.3s; pointer-events:none; text-align:center; max-width:500px;
+    z-index:45;
+  }
+  #subtitles.show{ opacity:1; }
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="gl"></canvas>
+
+  <div id="hud">
+    <div class="crosshair"></div>
+    <div id="vignette"></div>
+    <div id="noise-overlay"></div>
+
+    <div id="objective" class="panel-frame">
+      <div class="eyebrow">THRESHOLD LOGISTICS // ACTIVE CONTRACT</div>
+      <div class="text" id="objective-text">Locate package within the facility.</div>
+    </div>
+
+    <div id="keyhints">
+      WASD MOVE&nbsp;&nbsp;SHIFT SPRINT&nbsp;&nbsp;CTRL CROUCH<br>
+      F FLASHLIGHT&nbsp;&nbsp;E INTERACT&nbsp;&nbsp;Q DROP<br>
+      B NOISE BEACON&nbsp;&nbsp;M MAP&nbsp;&nbsp;TAB LOG
+    </div>
+
+    <div id="statbox" class="panel-frame">
+      <div class="stat-row">
+        <div class="stat-label"><span>BATTERY</span><span id="battery-val">100%</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="battery-bar" style="width:100%"></div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-label"><span>STABILITY</span><span id="sanity-val">100%</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="sanity-bar" style="width:100%"></div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-label"><span>STAMINA</span><span id="stamina-val">100%</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="stamina-bar" style="width:100%"></div></div>
+      </div>
+    </div>
+
+    <div id="prompt"></div>
+    <div id="radio"><div class="tag">// INCOMING TRANSMISSION</div><div id="radio-text"></div></div>
+    <div id="subtitles"></div>
+
+    <canvas id="minimap" width="150" height="150"></canvas>
+
+    <div id="invpanel" class="panel-frame">
+      <h3>FIELD LOG</h3>
+      <div class="line"><span>Flashlight</span><span id="inv-fl">STANDARD ISSUE</span></div>
+      <div class="line"><span>Noise Beacons</span><span id="inv-beacon">1</span></div>
+      <div class="line"><span>Package</span><span id="inv-pkg">NOT CARRIED</span></div>
+      <div class="line"><span>Status</span><span id="inv-status">EMPLOYED</span></div>
+      <p style="opacity:0.6; margin-top:14px; font-size:11px;">Reminder: if you hear your own footsteps behind you, do not turn around.</p>
+    </div>
+  </div>
+
+  <!-- Touch controls (mobile only, shown via body.is-mobile) -->
+  <div id="touch-controls">
+    <div id="joystick-zone"><div id="joystick-knob"></div></div>
+    <div id="action-cluster">
+      <button class="tbtn" id="btn-beacon" type="button">BCN</button>
+      <button class="tbtn" id="btn-crouch" type="button">CRCH</button>
+      <button class="tbtn" id="btn-flash" type="button">FLSH</button>
+      <button class="tbtn" id="btn-sprint" type="button">RUN</button>
+      <button class="tbtn" id="btn-interact" type="button">E</button>
+    </div>
+    <div id="top-mobile-buttons">
+      <button class="tbtn-sm" id="btn-map" type="button">MAP</button>
+      <button class="tbtn-sm" id="btn-log" type="button">LOG</button>
+      <button class="tbtn-sm" id="btn-pause" type="button">II</button>
+    </div>
+  </div>
+
+  <div id="flash"></div>
+  <div id="jumpscare-overlay" style="position:absolute; inset:0; z-index:65; background:#000; display:none; align-items:center; justify-content:center; pointer-events:none;">
+    <div style="position:relative; width:220px; height:100px;">
+      <div style="position:absolute; left:5px; top:5px; width:90px; height:90px; border-radius:50%; background:#ff0000; box-shadow:0 0 50px #ff0000, 0 0 100px #ff0000, inset 0 0 20px #440000;"></div>
+      <div style="position:absolute; right:5px; top:5px; width:90px; height:90px; border-radius:50%; background:#ff0000; box-shadow:0 0 50px #ff0000, 0 0 100px #ff0000, inset 0 0 20px #440000;"></div>
+    </div>
+  </div>
+  <div id="flashlight-dust"></div>
+  <div id="portrait-overlay">
+    <div class="title-main" style="font-size:48px;">ROTATE DEVICE</div>
+    <p class="flavor" style="margin-top:20px; opacity:0.8;">Please rotate your device to landscape mode for the best experience.</p>
+  </div>
+
+  <!-- START -->
+  <div class="overlay" id="screen-start">
+    <div class="title-main">BACKROOMS<br>DELIVERY SERVICE</div>
+    <div class="title-sub">THRESHOLD LOGISTICS &mdash; COURIER ONBOARDING</div>
+    <p class="flavor">Pick up the package. Deliver it. Find the exit. The halls reconfigure when unobserved.
+      Your flashlight is the only thing that keeps anything honest &mdash; including the thing that learned to walk like you do.</p>
+    <div class="controls-grid">
+      <div><b>WASD</b></div><div>Move</div>
+      <div><b>Mouse</b></div><div>Look around</div>
+      <div><b>Shift</b></div><div>Sprint (uses stamina)</div>
+      <div><b>Ctrl</b></div><div>Crouch (quieter)</div>
+      <div><b>F</b></div><div>Toggle flashlight</div>
+      <div><b>E</b></div><div>Interact / pick up / deliver</div>
+      <div><b>Q</b></div><div>Drop package</div>
+      <div><b>B</b></div><div>Throw noise beacon</div>
+      <div><b>M</b></div><div>View map</div>
+      <div><b>Tab</b></div><div>Field log</div>
+    </div>
+    <div class="controls-grid mobile-only">
+      <div><b>Joystick</b></div><div>Move (bottom-left)</div>
+      <div><b>Drag screen</b></div><div>Look around</div>
+      <div><b>RUN</b></div><div>Hold to sprint</div>
+      <div><b>CRCH</b></div><div>Tap to toggle crouch</div>
+      <div><b>FLSH</b></div><div>Toggle flashlight</div>
+      <div><b>E</b></div><div>Interact / pick up / deliver</div>
+      <div><b>BCN</b></div><div>Throw noise beacon</div>
+      <div><b>MAP / LOG / II</b></div><div>Top-right icons</div>
+    </div>
+    <div style="margin-bottom:20px; opacity:0.8; font-size:12px; letter-spacing:1px;">DIFFICULTY</div>
+    <div style="display:flex; gap:12px; justify-content:center; margin-bottom:24px;">
+      <button class="btn diff-btn" data-diff="easy" style="font-size:11px; padding:8px 16px;">EASY</button>
+      <button class="btn diff-btn active" data-diff="normal" style="font-size:11px; padding:8px 16px;">NORMAL</button>
+      <button class="btn diff-btn" data-diff="hard" style="font-size:11px; padding:8px 16px;">HARD</button>
+    </div>
+    <button class="btn" id="btn-begin">BEGIN SHIFT</button>
+  </div>
+
+  <!-- PAUSED -->
+  <div class="overlay hidden" id="screen-pause">
+    <div class="title-main" style="font-size:42px;">SHIFT PAUSED</div>
+    <p class="flavor">The maze does not pause with you.</p>
+    <button class="btn" id="btn-resume">RESUME</button>
+  </div>
+
+  <!-- WIN -->
+  <div class="overlay hidden" id="screen-win">
+    <div class="title-main" style="font-size:48px;">EMPLOYEE OF THE MONTH</div>
+    <p class="flavor" id="win-text">Contract fulfilled. Extraction successful. Threshold Logistics thanks you for your continued service.</p>
+    <button class="btn" id="btn-restart-win">CLOCK OUT</button>
+  </div>
+
+  <!-- LOSE: CAUGHT -->
+  <div class="overlay hidden" id="screen-lost">
+    <div class="title-main" id="lost-title" style="font-size:48px;">DELIVERY INCOMPLETE</div>
+    <p class="flavor" id="lost-text">No further explanation is provided.</p>
+    <button class="btn" id="btn-restart-lost">NEW EMPLOYEE FILE</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   MOBILE DETECTION
+   ============================================================ */
+const isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 ||
+                  /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+if(isMobile){ document.body.classList.add('is-mobile'); }
+
+function checkOrientation(){
+  if(!isMobile) return;
+  const isPortrait = window.innerHeight > window.innerWidth;
+  document.body.classList.toggle('portrait', isPortrait);
+}
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', ()=> setTimeout(checkOrientation, 200));
+checkOrientation();
+
+function lockLandscape(){
+  if(!isMobile) return;
+  if(screen.orientation && screen.orientation.lock){
+    screen.orientation.lock('landscape').catch(()=>{});
+  }
+}
+
+// try immediately on load; also bind to first user gesture for iOS
+lockLandscape();
+document.addEventListener('touchstart', function firstTouch(){
+  lockLandscape();
+  document.removeEventListener('touchstart', firstTouch);
+}, {once:true});
+document.addEventListener('click', function firstClick(){
+  lockLandscape();
+  document.removeEventListener('click', firstClick);
+}, {once:true});
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const GRID = 10;
+const CELL = 6;
+const WALL_H = 3.4;
+const WALL_T = 0.3;
+const EYE_HEIGHT = 1.65;
+const CROUCH_HEIGHT = 1.05;
+const PLAYER_RADIUS = 0.38;
+const ENTITY_RADIUS = 0.45;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let scene, camera, renderer, clock;
+let wallMeshes = [], wallSegments = [];
+let flashlightSpot, flashlightTarget;
+let gameState = 'menu'; // menu | playing | paused | won | lost
+let yaw = 0, pitch = 0;
+const keys = {};
+let pointerLocked = false;
+let ambientLight; // for dynamic event lighting
+
+/* Touch input state */
+let touchMove = { x:0, y:0 };       // virtual joystick vector, -1..1
+let joystickTouchId = null;
+let lookTouchId = null;
+let joystickCenter = { x:0, y:0 };
+let lookLast = { x:0, y:0 };
+let mobileSprintHeld = false;
+let mobileCrouchToggled = false;
+
+const player = {
+  pos: new THREE.Vector3(0,0,0),
+  vel: new THREE.Vector3(),
+  crouching:false,
+  sprinting:false,
+  height: EYE_HEIGHT,
+};
+
+let battery = 100, sanity = 100, stamina = 100;
+let flashlightOn = false;
+let hasPackage = false, delivered = false;
+let beaconCharges = 1;
+let beaconActive = null; // {pos, timeLeft}
+
+let pickupPos, deliveryPos, exitPos;
+let pickupMesh, deliveryMesh, exitMesh, exitLight;
+let pickupCollected = false;
+
+const batteryPickups = []; // {pos, mesh, collected}
+
+let entity = null; // {group, pos, state, wanderTarget, wanderTimer}
+let entitySpawned = false;
+let entitySpawnTimer = 4; // seconds before entity appears
+
+let entityHasBeenSeen = false;
+let nearMissTriggered = false;
+let jumpscareOverlayTimeout = null;
+let difficulty = 'normal';
+let gameStartTime = 0;
+let entityTeleportTimer = 0;
+let entityStallTimer = 0;
+let entityLastPos = new THREE.Vector3();
+let entityPhasedTimer = 0;
+let fakeEchoEntities = [];
+let ambientScareTimer = 5 + Math.random()*10;
+let doorwayScareCooldown = 0;
+
+let distanceWalked = 0;
+let footstepTimer = 0;
+
+let audioCtx = null;
+let masterGain = null;
+
+const flickerLights = []; // ceiling fluorescents
+
+/* Dynamic event system */
+let activeEvent = null; // {type, timer, startTime}
+let eventTimer = 20 + Math.random()*15; // seconds until next event
+
+/* Lore notes */
+const loreNotes = []; // {pos, mesh, text, collected}
+
+/* Package drop marker */
+let packageDropMesh = null;
+let packageDropPos = null;
+let packageDropLight = null;
+
+/* Footstep echo rings */
+const footstepRings = []; // {x, z, radius, maxRadius, opacity}
+
+/* Shadow entity (low-sanity stalker) */
+let shadowEntity = null; // {group, pos, state, wanderTarget, active}
+let shadowSpawned = false;
+
+/* Entity AI recovery */
+let entityStuckTimer = 0;
+
+/* Proximity distortion */
+let entityProximityIntensity = 0; // 0..1
+
+/* Ambient tone region tracking */
+let currentDroneRegion = '';
+const droneOscs = []; // references for per-region pitch
+
+/* ============================================================
+   AUDIO (synthesized, no external assets)
+   ============================================================ */
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.5;
+  masterGain.connect(audioCtx.destination);
+  startDrone();
+}
+
+function noiseBuffer(duration){
+  const sr = audioCtx.sampleRate;
+  const buf = audioCtx.createBuffer(1, sr*duration, sr);
+  const data = buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i] = Math.random()*2-1;
+  return buf;
+}
+
+function playNoiseBurst(duration, volume, filterFreq, pan){
+  if(!audioCtx) return;
+  const src = audioCtx.createBufferSource();
+  src.buffer = noiseBuffer(duration);
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = filterFreq || 1200;
+  const gain = audioCtx.createGain();
+  gain.gain.value = volume;
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+  src.connect(filter); filter.connect(gain);
+  if(panner){ panner.pan.value = pan||0; gain.connect(panner); panner.connect(masterGain); }
+  else { gain.connect(masterGain); }
+  src.start();
+  src.stop(audioCtx.currentTime + duration);
+}
+
+function startDrone(){
+  const osc1 = audioCtx.createOscillator();
+  osc1.type='sine'; osc1.frequency.value = 42;
+  const osc2 = audioCtx.createOscillator();
+  osc2.type='sine'; osc2.frequency.value = 47;
+  const osc3 = audioCtx.createOscillator();
+  osc3.type='triangle'; osc3.frequency.value = 53;
+  const g = audioCtx.createGain();
+  g.gain.value = 0.05;
+  osc1.connect(g); osc2.connect(g); osc3.connect(g); g.connect(masterGain);
+  osc1.start(); osc2.start(); osc3.start();
+
+  droneOscs.push(osc1, osc2, osc3);
+
+  // gentle hum LFO
+  const lfo = audioCtx.createOscillator();
+  lfo.frequency.value = 0.07;
+  const lfoGain = audioCtx.createGain();
+  lfoGain.gain.value = 0.02;
+  lfo.connect(lfoGain); lfoGain.connect(g.gain);
+  lfo.start();
+}
+
+function footstepSound(){
+  const vol = player.crouching ? 0.03 : (player.sprinting ? 0.12 : 0.07);
+  const freq = player.crouching ? 500 : 900;
+  const pan = (Math.random()-0.5)*0.4;
+  playNoiseBurst(0.08, vol, freq, pan);
+  playNoiseBurst(0.05, vol*0.5, freq*0.5, pan + (Math.random()-0.5)*0.2);
+}
+
+function jumpscareSound(){
+  playNoiseBurst(1.2, 1.0, 2800, 0);
+  playNoiseBurst(0.5, 0.9, 200, 0);
+  playNoiseBurst(0.3, 0.6, 150, 0);
+}
+
+function showJumpscareOverlay(duration){
+  const el = document.getElementById('jumpscare-overlay');
+  el.style.display = 'flex';
+  el.style.opacity = '1';
+  clearTimeout(jumpscareOverlayTimeout);
+  jumpscareOverlayTimeout = setTimeout(()=>{
+    el.style.transition = 'opacity 0.15s';
+    el.style.opacity = '0';
+    setTimeout(()=>{ el.style.display = 'none'; el.style.transition = ''; }, 150);
+  }, duration || 150);
+}
+
+function triggerJumpscareOnSighting(){
+  jumpscareSound();
+  showJumpscareOverlay(200);
+  const flash = document.getElementById('flash');
+  flash.style.transition = 'none';
+  flash.style.background = '#ff0000';
+  flash.style.opacity = '0.7';
+  setTimeout(()=>{
+    flash.style.transition = 'opacity 0.3s';
+    flash.style.opacity = '0';
+    setTimeout(()=>{
+      flash.style.background = '#fff';
+      flash.style.transition = '';
+    }, 300);
+  }, 80);
+  shakeScreen(0.3, 8);
+}
+
+function triggerNearMissJumpscare(){
+  jumpscareSound();
+  showJumpscareOverlay(120);
+  const flash = document.getElementById('flash');
+  flash.style.transition = 'none';
+  flash.style.background = '#ff0000';
+  flash.style.opacity = '0.5';
+  setTimeout(()=>{
+    flash.style.transition = 'opacity 0.2s';
+    flash.style.opacity = '0';
+    setTimeout(()=>{
+      flash.style.background = '#fff';
+      flash.style.transition = '';
+    }, 200);
+  }, 50);
+  shakeScreen(0.2, 5);
+  sanity = Math.max(0, sanity - 15);
+  showRadio("Something is right behind you.");
+  showSubtitle("Something is right behind you.", 3000);
+}
+
+function shakeScreen(duration, intensity){
+  const app = document.getElementById('app');
+  const start = performance.now();
+  function shake(){
+    const elapsed = (performance.now() - start)/1000;
+    if(elapsed > duration){
+      app.style.transform = '';
+      return;
+    }
+    const decay = 1 - elapsed/duration;
+    const x = (Math.random()-0.5)*intensity*decay;
+    const y = (Math.random()-0.5)*intensity*decay;
+    app.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(shake);
+  }
+  shake();
+}
+
+function directionalPan(fromPos, toPos){
+  const dir = new THREE.Vector3(toPos.x - fromPos.x, 0, toPos.z - fromPos.z).normalize();
+  const forward = new THREE.Vector3();
+  camera.getWorldDirection(forward);
+  forward.y = 0; forward.normalize();
+  const right = new THREE.Vector3().crossVectors(forward, camera.up).normalize();
+  const dotRight = dir.dot(right);
+  const dotFwd = dir.dot(forward);
+  let angle = Math.atan2(dotRight, dotFwd);
+  return Math.max(-1, Math.min(1, Math.sin(angle)));
+}
+
+function entitySound(dist){
+  const vol = Math.max(0.04, Math.min(0.4, 1/(dist*0.4+1)));
+  const pan = entity ? directionalPan(player.pos, entity.pos) : 0;
+  playNoiseBurst(0.5, vol, 600, pan);
+}
+
+function heartbeatProximitySound(){
+  if(!entity) return;
+  const dist = entity.pos.distanceTo(player.pos);
+  const maxDist = 25;
+  if(dist > maxDist) return;
+  const prox = 1 - Math.min(1, dist / maxDist);
+  const interval = 1.8 - prox * 1.2;
+  const vol = 0.05 + prox * 0.25;
+  playNoiseBurst(0.18, vol, 120 - prox*20, 0);
+}
+
+function heartbeatSound(){
+  playNoiseBurst(0.18, 0.18, 120, 0);
+}
+
+function whisperSound(){
+  const pan = entity ? directionalPan(player.pos, entity.pos) : (Math.random()-0.5)*1.6;
+  playNoiseBurst(0.6, 0.06, 350, pan);
+}
+
+function showSubtitle(text, duration){
+  const el = document.getElementById('subtitles');
+  el.textContent = text;
+  el.classList.add('show');
+  clearTimeout(el._timeout);
+  el._timeout = setTimeout(()=> el.classList.remove('show'), duration || 3000);
+}
+
+function getDifficultyMultiplier(name){
+  if(name === 'easy') return { speed: 0.7, noiseRange: 0.65, stalkSpeed: 0.6 };
+  if(name === 'hard') return { speed: 1.35, noiseRange: 1.3, stalkSpeed: 1.3 };
+  return { speed: 1.0, noiseRange: 1.0, stalkSpeed: 1.0 };
+}
+
+/* ============================================================
+   MAZE GENERATION
+   ============================================================ */
+function generateMaze(n){
+  const cells = [];
+  for(let i=0;i<n;i++){
+    const col=[];
+    for(let j=0;j<n;j++) col.push({i,j,N:true,S:true,E:true,W:true,visited:false});
+    cells.push(col);
+  }
+  const stack=[];
+  let current = cells[0][0];
+  current.visited = true;
+  stack.push(current);
+  while(stack.length){
+    current = stack[stack.length-1];
+    const {i,j} = current;
+    const opts = [];
+    if(j>0 && !cells[i][j-1].visited) opts.push(['N', cells[i][j-1]]);
+    if(j<n-1 && !cells[i][j+1].visited) opts.push(['S', cells[i][j+1]]);
+    if(i<n-1 && !cells[i+1][j].visited) opts.push(['E', cells[i+1][j]]);
+    if(i>0 && !cells[i-1][j].visited) opts.push(['W', cells[i-1][j]]);
+    if(opts.length===0){ stack.pop(); continue; }
+    const [dir, next] = opts[Math.floor(Math.random()*opts.length)];
+    if(dir==='N'){ current.N=false; next.S=false; }
+    if(dir==='S'){ current.S=false; next.N=false; }
+    if(dir==='E'){ current.E=false; next.W=false; }
+    if(dir==='W'){ current.W=false; next.E=false; }
+    next.visited = true;
+    stack.push(next);
+  }
+  // carve a few extra loops so it's not 100% tree (less frustrating, more "lying" shortcuts)
+  for(let k=0;k<Math.floor(n*0.8);k++){
+    const i = Math.floor(Math.random()*n), j = Math.floor(Math.random()*n);
+    const dirs = ['N','S','E','W'];
+    const dir = dirs[Math.floor(Math.random()*dirs.length)];
+    const cell = cells[i][j];
+    if(dir==='N' && j>0){ cell.N=false; cells[i][j-1].S=false; }
+    if(dir==='S' && j<n-1){ cell.S=false; cells[i][j+1].N=false; }
+    if(dir==='E' && i<n-1){ cell.E=false; cells[i+1][j].W=false; }
+    if(dir==='W' && i>0){ cell.W=false; cells[i-1][j].E=false; }
+  }
+  return cells;
+}
+
+function cellCenter(i,j){
+  const off = (GRID-1)/2;
+  return { x: (i-off)*CELL, z: (j-off)*CELL };
+}
+
+const START_CELL = [Math.floor(GRID/2), Math.floor(GRID/2)];
+
+function buildMazeGeometry(cells){
+  const segSet = new Map();
+  function addSeg(x1,z1,x2,z2){
+    const key = [x1,z1,x2,z2].map(v=>v.toFixed(2)).join(':');
+    const keyAlt = [x2,z2,x1,z1].map(v=>v.toFixed(2)).join(':');
+    if(segSet.has(key) || segSet.has(keyAlt)) return;
+    segSet.set(key, {x1,z1,x2,z2});
+  }
+  for(let i=0;i<GRID;i++){
+    for(let j=0;j<GRID;j++){
+      const c = cells[i][j];
+      const {x,z} = cellCenter(i,j);
+      const h = CELL/2;
+      if(c.N) addSeg(x-h, z-h, x+h, z-h);
+      if(c.S) addSeg(x-h, z+h, x+h, z+h);
+      if(c.W) addSeg(x-h, z-h, x-h, z+h);
+      if(c.E) addSeg(x+h, z-h, x+h, z+h);
+    }
+  }
+  wallSegments = Array.from(segSet.values());
+
+  const wallTex = makeWallTexture();
+  const wallMat = new THREE.MeshStandardMaterial({ map: wallTex, roughness:0.92, metalness:0.02 });
+
+  const group = new THREE.Group();
+  wallSegments.forEach(seg=>{
+    const horizontal = Math.abs(seg.z1-seg.z2) < 0.001;
+    const length = CELL;
+    let geo, mesh;
+    if(horizontal){
+      geo = new THREE.BoxGeometry(length, WALL_H, WALL_T);
+      mesh = new THREE.Mesh(geo, wallMat);
+      mesh.position.set((seg.x1+seg.x2)/2, WALL_H/2, seg.z1);
+    } else {
+      geo = new THREE.BoxGeometry(WALL_T, WALL_H, length);
+      mesh = new THREE.Mesh(geo, wallMat);
+      mesh.position.set(seg.x1, WALL_H/2, (seg.z1+seg.z2)/2);
+    }
+    mesh.castShadow = false; mesh.receiveShadow = true;
+    group.add(mesh);
+    wallMeshes.push(mesh);
+  });
+  scene.add(group);
+
+  // floor
+  const span = GRID*CELL;
+  const floorTex = makeFloorTexture();
+  floorTex.repeat.set(span/3, span/3);
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(span, span),
+    new THREE.MeshStandardMaterial({ map: floorTex, roughness:1.0 })
+  );
+  floor.rotation.x = -Math.PI/2;
+  floor.position.set(0,0,0);
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // ceiling
+  const ceilTex = makeCeilingTexture();
+  ceilTex.repeat.set(span/4, span/4);
+  const ceiling = new THREE.Mesh(
+    new THREE.PlaneGeometry(span, span),
+    new THREE.MeshStandardMaterial({ map: ceilTex, roughness:1.0 })
+  );
+  ceiling.rotation.x = Math.PI/2;
+  ceiling.position.set(0, WALL_H, 0);
+  scene.add(ceiling);
+
+  // ceiling fluorescent fixtures scattered around (visual + actual light)
+  for(let i=0;i<GRID;i++){
+    for(let j=0;j<GRID;j++){
+      if(Math.random() < 0.22){
+        const {x,z} = cellCenter(i,j);
+        addFluorescentFixture(x,z);
+      }
+    }
+  }
+}
+
+function makeWallTexture(){
+  const c = document.createElement('canvas'); c.width=128; c.height=128;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#a89456'; ctx.fillRect(0,0,128,128);
+  ctx.fillStyle = '#988548';
+  for(let x=0;x<128;x+=16) ctx.fillRect(x,0,8,128);
+  for(let i=0;i<60;i++){
+    ctx.fillStyle = `rgba(70,60,25,${(Math.random()*0.18).toFixed(2)})`;
+    ctx.fillRect(Math.random()*128, Math.random()*128, Math.random()*10+2, Math.random()*10+2);
+  }
+  ctx.strokeStyle='rgba(60,50,15,0.25)';
+  ctx.strokeRect(0,0,128,128);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2,1);
+  return tex;
+}
+
+function makeFloorTexture(){
+  const c = document.createElement('canvas'); c.width=128; c.height=128;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#322c19'; ctx.fillRect(0,0,128,128);
+  for(let i=0;i<800;i++){
+    ctx.fillStyle = `rgba(${40+Math.random()*30},${35+Math.random()*25},${15+Math.random()*15},${(Math.random()*0.5).toFixed(2)})`;
+    ctx.fillRect(Math.random()*128, Math.random()*128, 1.5, 1.5);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+function makeCeilingTexture(){
+  const c = document.createElement('canvas'); c.width=128; c.height=128;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#cfc8a0'; ctx.fillRect(0,0,128,128);
+  ctx.strokeStyle = 'rgba(120,112,80,0.5)'; ctx.lineWidth=2;
+  for(let x=0;x<=128;x+=32){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,128); ctx.stroke(); }
+  for(let y=0;y<=128;y+=32){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(128,y); ctx.stroke(); }
+  for(let i=0;i<40;i++){
+    ctx.fillStyle = `rgba(90,80,40,${(Math.random()*0.15).toFixed(2)})`;
+    ctx.fillRect(Math.random()*128, Math.random()*128, Math.random()*6, Math.random()*6);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  return tex;
+}
+
+function addFluorescentFixture(x,z){
+  const fixture = new THREE.Mesh(
+    new THREE.BoxGeometry(2.2, 0.08, 0.5),
+    new THREE.MeshBasicMaterial({ color: 0xfff3d0 })
+  );
+  fixture.position.set(x, WALL_H-0.06, z);
+  scene.add(fixture);
+
+  const light = new THREE.PointLight(0xfff0c0, 0.9, 11, 2);
+  light.position.set(x, WALL_H-0.3, z);
+  scene.add(light);
+
+  flickerLights.push({ light, fixture, baseIntensity:0.9, timer: Math.random()*4, flickerState:true });
+}
+
+/* ============================================================
+   COLLISION
+   ============================================================ */
+function resolveCollision(pos, radius){
+  for(let iter=0; iter<2; iter++){
+    for(const seg of wallSegments){
+      const dx = seg.x2-seg.x1, dz = seg.z2-seg.z1;
+      const lenSq = dx*dx+dz*dz;
+      let t = lenSq>0 ? ((pos.x-seg.x1)*dx+(pos.z-seg.z1)*dz)/lenSq : 0;
+      t = Math.max(0, Math.min(1, t));
+      const cx = seg.x1 + t*dx, cz = seg.z1 + t*dz;
+      const distX = pos.x-cx, distZ = pos.z-cz;
+      const dist = Math.sqrt(distX*distX+distZ*distZ);
+      const minDist = radius + WALL_T/2;
+      if(dist < minDist && dist > 0.0001){
+        const push = (minDist-dist)/dist;
+        pos.x += distX*push;
+        pos.z += distZ*push;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   PACKAGE / DELIVERY / EXIT / PICKUPS
+   ============================================================ */
+function farCell(){
+  // pick a cell reasonably far from the center (start)
+  const candidates = [];
+  for(let i=0;i<GRID;i++) for(let j=0;j<GRID;j++){
+    const distFromCenter = Math.abs(i-(GRID-1)/2) + Math.abs(j-(GRID-1)/2);
+    if(distFromCenter > GRID*0.55) candidates.push([i,j]);
+  }
+  return candidates[Math.floor(Math.random()*candidates.length)];
+}
+
+function setupObjects(){
+  const [pi,pj] = farCell();
+  let [di,dj] = farCell();
+  while(di===pi && dj===pj){ [di,dj] = farCell(); }
+
+  const p = cellCenter(pi,pj);
+  const d = cellCenter(di,dj);
+  pickupPos = new THREE.Vector3(p.x, 0, p.z);
+  deliveryPos = new THREE.Vector3(d.x, 0, d.z);
+  const startC = cellCenter(START_CELL[0], START_CELL[1]);
+  exitPos = new THREE.Vector3(startC.x, 0, startC.z);
+
+  // pickup package mesh
+  pickupMesh = new THREE.Group();
+  const box = new THREE.Mesh(
+    new THREE.BoxGeometry(0.5,0.4,0.5),
+    new THREE.MeshStandardMaterial({ color:0x8a5a2b, roughness:0.8 })
+  );
+  box.position.y = 0.6;
+  pickupMesh.add(box);
+  const glow = new THREE.PointLight(0x66ccff, 1.2, 5, 2);
+  glow.position.y = 0.8;
+  pickupMesh.add(glow);
+  pickupMesh.position.set(pickupPos.x, 0, pickupPos.z);
+  scene.add(pickupMesh);
+
+  // delivery marker
+  deliveryMesh = new THREE.Group();
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.5,0.65,24),
+    new THREE.MeshBasicMaterial({ color:0x66ccff, side:THREE.DoubleSide, transparent:true, opacity:0.7 })
+  );
+  ring.rotation.x = -Math.PI/2;
+  ring.position.y = 0.02;
+  deliveryMesh.add(ring);
+  const dlight = new THREE.PointLight(0x66ccff, 1.0, 6, 2);
+  dlight.position.y = 1.2;
+  deliveryMesh.add(dlight);
+  deliveryMesh.position.set(deliveryPos.x, 0, deliveryPos.z);
+  scene.add(deliveryMesh);
+
+  // exit pad at start (dormant until delivered)
+  exitMesh = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.0,1.0,0.05,24),
+    new THREE.MeshStandardMaterial({ color:0x222222, emissive:0x000000 })
+  );
+  exitMesh.position.set(exitPos.x, 0.03, exitPos.z);
+  scene.add(exitMesh);
+  exitLight = new THREE.PointLight(0x33ff77, 0, 7, 2);
+  exitLight.position.set(exitPos.x, 1.5, exitPos.z);
+  scene.add(exitLight);
+
+  // battery pickups
+  for(let k=0;k<3;k++){
+    const [bi,bj] = farCell();
+    const b = cellCenter(bi,bj);
+    const mesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.18,0.18,0.4,10),
+      new THREE.MeshStandardMaterial({ color:0xffaa33, emissive:0x553300, emissiveIntensity:0.6 })
+    );
+    mesh.position.set(b.x, 0.5, b.z);
+    scene.add(mesh);
+    const l = new THREE.PointLight(0xffaa33, 0.6, 3, 2);
+    l.position.copy(mesh.position);
+    scene.add(l);
+    batteryPickups.push({ pos: new THREE.Vector3(b.x,0,b.z), mesh, light:l, collected:false });
+  }
+
+  // lore notes
+  const loreTexts = [
+    "Memo #47: Avoid Level 2 after dark. The entity learns.",
+    "The halls reconfigure when unobserved. Don't close your eyes.",
+    "Threshold Logistics does not acknowledge missing employees.",
+    "Your flashlight is the only thing that keeps anything honest.",
+    "If you hear your own footsteps behind you, do not turn around.",
+    "Package integrity is paramount. Your survival is not.",
+    "The thing that walks like you has your cadence now.",
+    "Smile. You're on Threshold camera."
+  ];
+  for(let k=0;k<6;k++){
+    const [ni,nj] = farCell();
+    const n = cellCenter(ni,nj);
+    const noteMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.6,0.4),
+      new THREE.MeshBasicMaterial({ color:0x88aaff, side:THREE.DoubleSide, transparent:true, opacity:0.85 })
+    );
+    noteMesh.rotation.x = -Math.PI/2;
+    noteMesh.position.set(n.x, 0.06, n.z);
+    scene.add(noteMesh);
+    const nlight = new THREE.PointLight(0x88aaff, 0.4, 3, 2);
+    nlight.position.set(n.x, 0.3, n.z);
+    scene.add(nlight);
+    loreNotes.push({ pos: new THREE.Vector3(n.x,0,n.z), mesh: noteMesh, light: nlight, text: loreTexts[k % loreTexts.length], collected: false });
+  }
+}
+
+/* ============================================================
+   ENTITY
+   ============================================================ */
+function spawnEntity(){
+  const [ei,ej] = farCell();
+  const e = cellCenter(ei,ej);
+  const group = new THREE.Group();
+
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.22,0.32,2.2,8),
+    new THREE.MeshStandardMaterial({ color:0x010101, roughness:0.98, metalness:0.1 })
+  );
+  body.position.y = 1.3;
+  group.add(body);
+
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.32,10,10),
+    new THREE.MeshStandardMaterial({ color:0x020202, roughness:0.95 })
+  );
+  head.position.y = 2.2;
+  head.scale.set(1.0, 1.25, 0.9);
+  group.add(head);
+
+  const eyeMat = new THREE.MeshBasicMaterial({ color:0xff0000 });
+  const eyeGeo = new THREE.SphereGeometry(0.04,6,6);
+  const eyePositions = [
+    [-0.12, 2.22, 0.28], [0.12, 2.22, 0.28],
+    [-0.06, 2.30, 0.30], [0.06, 2.30, 0.30],
+    [0.0, 2.15, 0.30]
+  ];
+  eyePositions.forEach(pos => {
+    const eye = new THREE.Mesh(eyeGeo, eyeMat);
+    eye.position.set(pos[0], pos[1], pos[2]);
+    group.add(eye);
+  });
+
+  const catchGeo = new THREE.SphereGeometry(0.02,4,4);
+  const catchMat = new THREE.MeshBasicMaterial({ color:0xffffff });
+  eyePositions.forEach(pos => {
+    const catchlight = new THREE.Mesh(catchGeo, catchMat);
+    catchlight.position.set(pos[0], pos[1], pos[2] + 0.04);
+    group.add(catchlight);
+  });
+
+  const armGeo = new THREE.CylinderGeometry(0.06, 0.08, 1.5, 6);
+  const armMat = new THREE.MeshStandardMaterial({ color:0x010101, roughness:0.95 });
+  const armL = new THREE.Mesh(armGeo, armMat);
+  armL.position.set(-0.35, 1.0, 0.15);
+  armL.rotation.x = 0.25;
+  group.add(armL);
+  const armR = new THREE.Mesh(armGeo, armMat);
+  armR.position.set(0.35, 1.0, 0.15);
+  armR.rotation.x = -0.25;
+  group.add(armR);
+
+  const entityLight = new THREE.PointLight(0xff0000, 0.5, 7, 2);
+  entityLight.position.set(0, 2.2, 0);
+  group.add(entityLight);
+
+  group.position.set(e.x, 0, e.z);
+  scene.add(group);
+
+  entity = {
+    group, pos: new THREE.Vector3(e.x,0,e.z),
+    state:'wander', wanderTarget:new THREE.Vector3(e.x,0,e.z), wanderTimer:0,
+    soundTimer: Math.random()*5+3,
+    eyeLight: entityLight
+  };
+  entitySpawned = true;
+}
+
+function isObserved(){
+  if(!flashlightOn || !entity) return false;
+  const camPos = camera.position;
+  const toEntity = new THREE.Vector3(entity.pos.x-camPos.x, 1.4-camPos.y+0.4, entity.pos.z-camPos.z);
+  const dist = toEntity.length();
+  if(dist > 16) return false;
+  const dir = toEntity.clone().normalize();
+  const forward = new THREE.Vector3();
+  camera.getWorldDirection(forward);
+  const angle = forward.angleTo(dir);
+  if(angle > 0.42) return false; // ~24 degrees half-cone
+  // line of sight check
+  const raycaster = new THREE.Raycaster(camPos, dir, 0.1, dist-0.3);
+  const hits = raycaster.intersectObjects(wallMeshes, false);
+  if(hits.length>0) return false;
+  return true;
+}
+
+function updateEntity(dt){
+  if(!entity) return;
+  const distToPlayer = entity.pos.distanceTo(player.pos);
+  const observed = isObserved();
+  const diff = getDifficultyMultiplier(difficulty);
+
+  let noiseRange = (player.crouching ? 15 : (player.sprinting ? 40 : 25)) * diff.noiseRange;
+  if(beaconActive) noiseRange = Math.max(noiseRange, 50 * diff.noiseRange);
+  const timeScale = entity._timeMultiplier || 1.0;
+
+  let target = null;
+  let speed = 0;
+
+  if(observed){
+    entity.state = 'frozen';
+  } else if(beaconActive){
+    entity.state = 'lured';
+    target = beaconActive.pos;
+    speed = 4.2 * diff.speed * timeScale;
+  } else if(distToPlayer < noiseRange){
+    entity.state = 'hunting';
+    target = player.pos;
+    speed = 3.5 * diff.speed * timeScale;
+  } else {
+    entity.state = 'wander';
+    entity.wanderTimer -= dt;
+    if(entity.wanderTimer <= 0 || entity.pos.distanceTo(entity.wanderTarget) < 0.5){
+      const [wi,wj] = farCell();
+      const c = cellCenter(wi,wj);
+      entity.wanderTarget.set(c.x,0,c.z);
+      entity.wanderTimer = 5 + Math.random()*3;
+    }
+    target = entity.wanderTarget;
+    speed = 1.3 * diff.speed * timeScale;
+  }
+
+  if(target && speed>0){
+    const dir = new THREE.Vector3(target.x-entity.pos.x, 0, target.z-entity.pos.z);
+    if(dir.length() > 0.05){
+      dir.normalize();
+      const prevPos = entity.pos.clone();
+      entity.pos.x += dir.x*speed*dt;
+      entity.pos.z += dir.z*speed*dt;
+      entity.group.rotation.y = Math.atan2(dir.x, dir.z);
+      const moved = entity.pos.distanceTo(prevPos);
+      if(moved < speed*dt*0.3){
+        entityStuckTimer += dt;
+        if(entityStuckTimer > 0.4){
+          const perpA = new THREE.Vector3(-dir.z, 0, dir.x);
+          const perpB = new THREE.Vector3(dir.z, 0, -dir.x);
+          let bestDir = dir.clone();
+          let bestDist = 0;
+          [perpA, perpB, dir].forEach(d=>{
+            const testPos = entity.pos.clone().addScaledVector(d, speed*dt*2);
+            const testSegs = wallSegments.filter(s=>{
+              const t = Math.max(0, Math.min(1, ((testPos.x-s.x1)*(s.x2-s.x1)+(testPos.z-s.z1)*(s.z2-s.z1))/((s.x2-s.x1)**2+(s.z2-s.z1)**2)));
+              const cx = s.x1+t*(s.x2-s.x1), cz = s.z1+t*(s.z2-s.z1);
+              const dx = testPos.x-cx, dz = testPos.z-cz;
+              return Math.sqrt(dx*dx+dz*dz) < ENTITY_RADIUS + WALL_T/2;
+            });
+            const distToTarget = testPos.distanceTo(target);
+            if(testSegs.length === 0 && distToTarget > bestDist){
+              bestDist = distToTarget;
+              bestDir = d.clone();
+            }
+          });
+          entity.pos.x += bestDir.x*speed*dt*1.5;
+          entity.pos.z += bestDir.z*speed*dt*1.5;
+          entity.group.rotation.y = Math.atan2(bestDir.x, bestDir.z);
+        }
+      } else {
+        entityStuckTimer = 0;
+      }
+    }
+  }
+  resolveCollision(entity.pos, ENTITY_RADIUS);
+  entity.group.position.set(entity.pos.x, 0, entity.pos.z);
+
+  if(entityStuckTimer > 1.0){
+    const [wi,wj] = farCell();
+    const c = cellCenter(wi,wj);
+    entity.wanderTarget.set(c.x,0,c.z);
+    entity.wanderTimer = 3 + Math.random()*2;
+    entity.state = 'wander';
+    entityStuckTimer = 0;
+  }
+
+  entity.group.position.y = Math.sin(performance.now()*0.004)*0.02;
+  entity.group.rotation.z = Math.sin(performance.now()*0.006)*0.04;
+  entity.group.rotation.x = Math.cos(performance.now()*0.007)*0.03;
+
+  if(entity.eyeLight){
+    const baseIntensity = entity.state === 'hunting' ? 0.8 : (entity.state === 'lured' ? 0.9 : 0.3);
+    const flicker = entity.state === 'hunting' ? Math.random()*0.4 : Math.sin(performance.now()*0.01)*0.15;
+    entity.eyeLight.intensity = baseIntensity + flicker;
+  }
+
+  entity.soundTimer -= dt;
+  if(entity.soundTimer <= 0){
+    entity.soundTimer = entity.state==='hunting' ? (1.0+Math.random()*1.0) : (3+Math.random()*5);
+    if(distToPlayer < 26) entitySound(distToPlayer);
+  }
+
+  if(distToPlayer > 12) nearMissTriggered = false;
+
+  if(!entityHasBeenSeen && isObserved() && gameState === 'playing'){
+    entityHasBeenSeen = true;
+    triggerJumpscareOnSighting();
+  }
+
+  if(distToPlayer < 3.5 && !nearMissTriggered && gameState === 'playing'){
+    nearMissTriggered = true;
+    triggerNearMissJumpscare();
+  }
+
+  if(distToPlayer < 1.0 && gameState==='playing'){
+    triggerCaught();
+  }
+
+  entityTeleportTimer += dt;
+  const movedFromLast = entity.pos.distanceTo(entityLastPos);
+  if(movedFromLast < 0.3 && entityTeleportTimer > 3.0 && !observed && entity.state !== 'wander'){
+    const angleToPlayer = Math.atan2(player.pos.z - entity.pos.z, player.pos.x - entity.pos.x);
+    const offset = 6 + Math.random()*6;
+    const tx = player.pos.x + Math.cos(angleToPlayer + (Math.random()-0.5))*offset;
+    const tz = player.pos.z + Math.sin(angleToPlayer + (Math.random()-0.5))*offset;
+    entity.pos.set(
+      Math.max(-GRID*CELL/2, Math.min(GRID*CELL/2, tx)),
+      0,
+      Math.max(-GRID*CELL/2, Math.min(GRID*CELL/2, tz))
+    );
+    entity.group.position.set(entity.pos.x, 0, entity.pos.z);
+    entityTeleportTimer = 0;
+    entityLastPos.copy(entity.pos);
+    whisperSound();
+    showRadio("You hear footsteps that aren't yours.");
+  } else if(movedFromLast >= 0.5){
+    entityTeleportTimer = 0;
+    entityLastPos.copy(entity.pos);
+  }
+
+  entityPhasedTimer += dt;
+  if(entity.state === 'hunting' && entityPhasedTimer > 2 + Math.random()*4){
+    entityPhasedTimer = 0;
+    const phaseDuration = 0.6 + Math.random()*1.2;
+    entity.group.position.y += 0.3 + Math.random()*0.5;
+    entity.group.children.forEach(child => {
+      if(child.material && child.material.transparent === undefined){
+        child.material = child.material.clone();
+        child.material.transparent = true;
+        child.material.opacity = 0.75;
+      }
+    });
+    setTimeout(()=>{
+      if(entity && entity.group){
+        entity.group.position.y = Math.sin(performance.now()*0.004)*0.02;
+        entity.group.children.forEach(child => {
+          if(child.material && child.material.transparent){
+            child.material.transparent = false;
+            child.material.opacity = 1;
+          }
+        });
+      }
+    }, phaseDuration * 1000);
+  }
+
+  doorwayScareCooldown -= dt;
+  if(!observed && doorwayScareCooldown <= 0 && distToPlayer < 4){
+    const raycaster = new THREE.Raycaster(camera.position, new THREE.Vector3(entity.pos.x-camera.position.x, 0, entity.pos.z-camera.position.z).normalize(), 0.1, distToPlayer);
+    const hits = raycaster.intersectObjects(wallMeshes, false);
+    if(hits.length > 0 && hits[0].distance < distToPlayer - 0.5){
+      doorwayScareCooldown = 8 + Math.random()*10;
+      jumpscareSound();
+      showJumpscareOverlay(80);
+      shakeScreen(0.15, 3);
+      showSubtitle("Something is watching you from the other side.", 2500);
+    }
+  }
+
+  ambientScareTimer -= dt;
+  if(ambientScareTimer <= 0 && entity && distToPlayer > 15 && gameState === 'playing'){
+    ambientScareTimer = 15 + Math.random()*20;
+    if(Math.random() < 0.4){
+      whisperSound();
+      showSubtitle("You hear distant footsteps matching your own.", 3000);
+    } else {
+      const flash = document.getElementById('flash');
+      flash.style.transition = 'none';
+      flash.style.background = '#220000';
+      flash.style.opacity = '0.15';
+      setTimeout(()=>{
+        flash.style.transition = 'opacity 0.8s';
+        flash.style.opacity = '0';
+        setTimeout(()=>{ flash.style.background = '#fff'; flash.style.transition = ''; }, 800);
+      }, 50);
+    }
+  }
+}
+
+function spawnShadowEntity(){
+  const [si,sj] = farCell();
+  const s = cellCenter(si,sj);
+  const group = new THREE.Group();
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.22,0.3,1.4,8),
+    new THREE.MeshStandardMaterial({ color:0x020202, roughness:0.95 })
+  );
+  body.position.y = 0.9;
+  group.add(body);
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.22,8,8),
+    new THREE.MeshStandardMaterial({ color:0x030303, roughness:0.95 })
+  );
+  head.position.y = 1.7;
+  group.add(head);
+  group.position.set(s.x, 0, s.z);
+  scene.add(group);
+  shadowEntity = {
+    group, pos: new THREE.Vector3(s.x,0,s.z),
+    state:'wander', wanderTarget: new THREE.Vector3(s.x,0,s.z), wanderTimer:0,
+    active: false, lastStuck: 0, brushCooldown: 0
+  };
+  shadowSpawned = true;
+}
+
+function updateShadowEntity(dt){
+  if(!shadowEntity) return;
+  const distToPlayer = shadowEntity.pos.distanceTo(player.pos);
+  const shouldActive = sanity < 25;
+  if(shouldActive && !shadowEntity.active){
+    shadowEntity.active = true;
+    shadowEntity.state = 'hunting';
+  } else if(!shouldActive && shadowEntity.active){
+    shadowEntity.state = 'wander';
+    shadowEntity.active = false;
+  }
+
+  const diff = getDifficultyMultiplier(difficulty);
+  let target = null;
+  let speed = 0;
+  if(shadowEntity.active){
+    shadowEntity.state = 'hunting';
+    target = player.pos;
+    speed = 1.8 * diff.stalkSpeed;
+  } else {
+    shadowEntity.wanderTimer -= dt;
+    if(shadowEntity.wanderTimer <= 0 || shadowEntity.pos.distanceTo(shadowEntity.wanderTarget) < 0.5){
+      const [wi,wj] = farCell();
+      const c = cellCenter(wi,wj);
+      shadowEntity.wanderTarget.set(c.x,0,c.z);
+      shadowEntity.wanderTimer = 8 + Math.random()*6;
+    }
+    target = shadowEntity.wanderTarget;
+    speed = 0.9 * diff.speed;
+  }
+
+  if(target && speed>0){
+    const dir = new THREE.Vector3(target.x-shadowEntity.pos.x, 0, target.z-shadowEntity.pos.z);
+    if(dir.length() > 0.05){
+      dir.normalize();
+      shadowEntity.pos.x += dir.x*speed*dt;
+      shadowEntity.pos.z += dir.z*speed*dt;
+      shadowEntity.group.rotation.y = Math.atan2(dir.x, dir.z);
+    }
+  }
+  resolveCollision(shadowEntity.pos, 0.35);
+  shadowEntity.group.position.set(shadowEntity.pos.x, 0, shadowEntity.pos.z);
+  shadowEntity.group.position.y = Math.sin(performance.now()*0.003)*0.015;
+
+  if(shadowEntity.active && distToPlayer < 1.0 && shadowEntity.brushCooldown <= 0){
+    sanity = Math.max(0, sanity - 8*dt);
+    shadowEntity.brushCooldown = 3; // seconds before another brush
+    showRadio("Something brushed past you. You felt the cold.");
+    // reposition far away
+    const [ri,rj] = farCell();
+    const rc = cellCenter(ri,rj);
+    shadowEntity.pos.set(rc.x,0,rc.z);
+    shadowEntity.wanderTarget.set(rc.x,0,rc.z);
+  }
+  if(shadowEntity.brushCooldown > 0) shadowEntity.brushCooldown -= dt;
+}
+
+/* ============================================================
+   SETUP SCENE
+   ============================================================ */
+function setupScene(){
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x141006, 0.052);
+
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.05, 100);
+  camera.rotation.order = 'YXZ';
+
+  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl'), antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  ambientLight = new THREE.AmbientLight(0x4a4020, 0.18);
+  scene.add(ambientLight);
+  const hemi = new THREE.HemisphereLight(0x665533, 0x111008, 0.12);
+  scene.add(hemi);
+
+  flashlightSpot = new THREE.SpotLight(0xfff2cf, 0, 22, Math.PI/7, 0.45, 1.2);
+  flashlightSpot.castShadow = false;
+  scene.add(flashlightSpot);
+  flashlightTarget = new THREE.Object3D();
+  scene.add(flashlightTarget);
+  flashlightSpot.target = flashlightTarget;
+  scene.add(flashlightSpot);
+
+  const cells = generateMaze(GRID);
+  buildMazeGeometry(cells);
+  setupObjects();
+
+  player.pos.set(exitPos.x,0,exitPos.z);
+  camera.position.set(exitPos.x, EYE_HEIGHT, exitPos.z);
+
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', ()=> setTimeout(onResize, 300));
+}
+
+function onResize(){
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+/* ============================================================
+   INPUT (keyboard / mouse)
+   ============================================================ */
+document.addEventListener('keydown', (e)=>{
+  keys[e.code] = true;
+  if(gameState!=='playing') return;
+  if(e.code==='KeyF') toggleFlashlight();
+  if(e.code==='KeyE') interact();
+  if(e.code==='KeyQ') dropPackage();
+  if(e.code==='KeyB') throwBeacon();
+  if(e.code==='KeyM') toggleMap();
+  if(e.code==='Tab'){ e.preventDefault(); toggleInv(); }
+  if(e.code==='Escape'){ /* handled by pointerlock change */ }
+});
+document.addEventListener('keyup', (e)=>{ keys[e.code]=false; });
+
+document.addEventListener('mousemove', (e)=>{
+  if(isMobile || !pointerLocked || gameState!=='playing') return;
+  yaw -= e.movementX * 0.0022;
+  pitch -= e.movementY * 0.0022;
+  pitch = Math.max(-1.4, Math.min(1.4, pitch));
+});
+
+const glCanvas = document.getElementById('gl');
+glCanvas.addEventListener('click', ()=>{
+  if(isMobile) return;
+  if(gameState==='playing' && !pointerLocked) glCanvas.requestPointerLock();
+});
+document.addEventListener('pointerlockchange', ()=>{
+  if(isMobile) return;
+  pointerLocked = document.pointerLockElement === glCanvas;
+  if(!pointerLocked && gameState==='playing') showPause();
+});
+
+let mapVisible = false;
+function toggleMap(){ mapVisible = !mapVisible; document.getElementById('minimap').style.transform = mapVisible? 'scale(2.0) translate(-22%,-22%)' : 'scale(1)'; }
+let invVisible = false;
+function toggleInv(){
+  invVisible = !invVisible;
+  document.getElementById('invpanel').style.display = invVisible ? 'block' : 'none';
+}
+
+function toggleFlashlight(){
+  if(battery <= 0){ flashlightOn = false; return; }
+  flashlightOn = !flashlightOn;
+}
+
+function interact(){
+  // check lore notes first
+  for(const note of loreNotes){
+    if(!note.collected && player.pos.distanceTo(note.pos) < 1.5){
+      note.collected = true;
+      scene.remove(note.mesh); scene.remove(note.light);
+      showRadio(note.text);
+      return;
+    }
+  }
+  if(!hasPackage && !pickupCollected){
+    if(player.pos.distanceTo(pickupPos) < 1.6){
+      hasPackage = true; pickupCollected = true;
+      scene.remove(pickupMesh);
+      if(packageDropMesh){ scene.remove(packageDropMesh); scene.remove(packageDropLight); packageDropMesh = null; packageDropLight = null; packageDropPos = null; }
+      showRadio("Package secured. Proceed to drop zone marked on your route.");
+      showSubtitle("Package secured. Proceed to drop zone marked on your route.", 4000);
+      if(Math.random() < 0.3){
+        jumpscareSound();
+        showJumpscareOverlay(60);
+        shakeScreen(0.1, 2);
+      }
+      updateObjectiveText();
+    }
+  } else if(hasPackage && !delivered){
+    if(player.pos.distanceTo(deliveryPos) < 1.8){
+      hasPackage = false; delivered = true;
+      scene.remove(deliveryMesh);
+      if(packageDropMesh){ scene.remove(packageDropMesh); scene.remove(packageDropLight); packageDropMesh = null; packageDropLight = null; packageDropPos = null; }
+      activateExit();
+      showRadio("Delivery confirmed. Return to the extraction point to clock out.");
+      updateObjectiveText();
+    }
+  }
+}
+
+function dropPackage(){
+  if(hasPackage && !delivered){
+    hasPackage = false;
+    pickupMesh.position.set(player.pos.x,0,player.pos.z);
+    scene.add(pickupMesh);
+    pickupCollected = false;
+    pickupPos.set(player.pos.x,0,player.pos.z);
+    // create drop marker
+    if(packageDropMesh){ scene.remove(packageDropMesh); scene.remove(packageDropLight); }
+    packageDropMesh = new THREE.Mesh(
+      new THREE.RingGeometry(0.35,0.5,20),
+      new THREE.MeshBasicMaterial({ color:0x66ccff, side:THREE.DoubleSide, transparent:true, opacity:0.6 })
+    );
+    packageDropMesh.rotation.x = -Math.PI/2;
+    packageDropMesh.position.set(player.pos.x, 0.03, player.pos.z);
+    scene.add(packageDropMesh);
+    packageDropLight = new THREE.PointLight(0x66ccff, 0.6, 4, 2);
+    packageDropLight.position.set(player.pos.x, 0.4, player.pos.z);
+    scene.add(packageDropLight);
+    packageDropPos = new THREE.Vector3(player.pos.x,0,player.pos.z);
+    updateObjectiveText();
+  }
+}
+
+function throwBeacon(){
+  if(beaconCharges<=0) return;
+  beaconCharges--;
+  const forward = new THREE.Vector3();
+  camera.getWorldDirection(forward);
+  const pos = new THREE.Vector3(player.pos.x + forward.x*3, 0, player.pos.z + forward.z*3);
+  beaconActive = { pos, timeLeft: 12 };
+  const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.2,10,10),
+    new THREE.MeshStandardMaterial({ color:0xff5533, emissive:0xff2200, emissiveIntensity:1.5 })
+  );
+  mesh.position.set(pos.x,0.3,pos.z);
+  scene.add(mesh);
+  beaconActive.mesh = mesh;
+  const l = new THREE.PointLight(0xff5533, 1.2, 6, 2);
+  l.position.copy(mesh.position);
+  scene.add(l);
+  beaconActive.light = l;
+  document.getElementById('inv-beacon').textContent = beaconCharges;
+  showRadio("Noise beacon deployed.");
+}
+
+function activateExit(){
+  exitMesh.material.color.set(0x113322);
+  exitMesh.material.emissive = new THREE.Color(0x113322);
+}
+
+/* ============================================================
+   OBJECTIVE / RADIO TEXT
+   ============================================================ */
+function updateObjectiveText(){
+  const el = document.getElementById('objective-text');
+  if(!pickupCollected) el.textContent = "Locate the package within the facility.";
+  else if(!delivered) el.textContent = "Carry the package to the drop zone (blue ring).";
+  else el.textContent = "Return to the extraction point and step onto the pad.";
+}
+
+let radioTimeout = null;
+function showRadio(text){
+  const r = document.getElementById('radio');
+  document.getElementById('radio-text').textContent = text;
+  r.classList.add('show');
+  clearTimeout(radioTimeout);
+  radioTimeout = setTimeout(()=> r.classList.remove('show'), 6000);
+}
+
+/* ============================================================
+   TOUCH CONTROLS (mobile)
+   ============================================================ */
+function bindTap(id, fn){
+  const el = document.getElementById(id);
+  el.addEventListener('touchstart', (e)=>{ e.preventDefault(); el.classList.add('active'); fn(); }, {passive:false});
+  const release = (e)=>{ e.preventDefault(); el.classList.remove('active'); };
+  el.addEventListener('touchend', release, {passive:false});
+  el.addEventListener('touchcancel', release, {passive:false});
+}
+function bindHold(id, setter){
+  const el = document.getElementById(id);
+  el.addEventListener('touchstart', (e)=>{ e.preventDefault(); setter(true); el.classList.add('active'); }, {passive:false});
+  const release = (e)=>{ e.preventDefault(); setter(false); el.classList.remove('active'); };
+  el.addEventListener('touchend', release, {passive:false});
+  el.addEventListener('touchcancel', release, {passive:false});
+}
+function bindToggleButton(id, setter){
+  const el = document.getElementById(id);
+  let state = false;
+  el.addEventListener('touchstart', (e)=>{
+    e.preventDefault();
+    state = !state;
+    setter(state);
+    el.classList.toggle('active', state);
+  }, {passive:false});
+}
+
+function setupTouchControls(){
+  if(!isMobile) return;
+
+  const joyZone = document.getElementById('joystick-zone');
+  const joyKnob = document.getElementById('joystick-knob');
+  const JOY_R = 48;
+
+  function joyCenterPoint(){
+    const r = joyZone.getBoundingClientRect();
+    return { x: r.left + r.width/2, y: r.top + r.height/2 };
+  }
+
+  function updateJoystick(cx, cy){
+    const dx = cx - joystickCenter.x;
+    const dy = cy - joystickCenter.y;
+    const dist = Math.min(JOY_R, Math.hypot(dx,dy));
+    const angle = Math.atan2(dy,dx);
+    const kx = Math.cos(angle)*dist, ky = Math.sin(angle)*dist;
+    joyKnob.style.transform = `translate(${kx}px, ${ky}px)`;
+    touchMove.x = kx / JOY_R;
+    touchMove.y = -ky / JOY_R;
+  }
+
+  function resetJoystick(){
+    joyKnob.style.transform = 'translate(0px,0px)';
+    touchMove.x = 0; touchMove.y = 0;
+  }
+
+  joyZone.addEventListener('touchstart', (e)=>{
+    e.preventDefault();
+    if(gameState!=='playing' || joystickTouchId !== null) return;
+    const t = e.changedTouches[0];
+    joystickTouchId = t.identifier;
+    joystickCenter = joyCenterPoint();
+    updateJoystick(t.clientX, t.clientY);
+  }, {passive:false});
+
+  document.addEventListener('touchmove', (e)=>{
+    for(const t of e.changedTouches){
+      if(t.identifier === joystickTouchId){
+        e.preventDefault();
+        updateJoystick(t.clientX, t.clientY);
+      } else if(t.identifier === lookTouchId){
+        e.preventDefault();
+        const dx = t.clientX - lookLast.x;
+        const dy = t.clientY - lookLast.y;
+        yaw -= dx * 0.0032;
+        pitch -= dy * 0.0032;
+        pitch = Math.max(-1.4, Math.min(1.4, pitch));
+        lookLast = { x:t.clientX, y:t.clientY };
+      }
+    }
+  }, {passive:false});
+
+  function endTouch(e){
+    for(const t of e.changedTouches){
+      if(t.identifier === joystickTouchId){ joystickTouchId = null; resetJoystick(); }
+      if(t.identifier === lookTouchId){ lookTouchId = null; }
+    }
+  }
+  document.addEventListener('touchend', endTouch);
+  document.addEventListener('touchcancel', endTouch);
+
+  // Any touch that doesn't start on the joystick or a button becomes the look-drag touch.
+  document.getElementById('app').addEventListener('touchstart', (e)=>{
+    if(gameState !== 'playing') return;
+    for(const t of e.changedTouches){
+      const el = document.elementFromPoint(t.clientX, t.clientY);
+      if(el && (el.closest('#joystick-zone') || el.closest('.tbtn') || el.closest('.tbtn-sm'))) continue;
+      if(lookTouchId === null && t.identifier !== joystickTouchId){
+        lookTouchId = t.identifier;
+        lookLast = { x:t.clientX, y:t.clientY };
+      }
+    }
+  }, {passive:true});
+
+  bindHold('btn-sprint', v => mobileSprintHeld = v);
+  bindToggleButton('btn-crouch', v => mobileCrouchToggled = v);
+  bindTap('btn-flash', toggleFlashlight);
+  bindTap('btn-interact', interact);
+  bindTap('btn-beacon', throwBeacon);
+  bindTap('btn-map', toggleMap);
+  bindTap('btn-log', toggleInv);
+  bindTap('btn-pause', ()=>{ if(gameState==='playing') showPause(); });
+}
+
+/* ============================================================
+   GAME FLOW
+   ============================================================ */
+function startGame(){
+  document.getElementById('screen-start').classList.add('hidden');
+  initAudio();
+  gameState = 'playing';
+  gameStartTime = performance.now() / 1000;
+  updateObjectiveText();
+  setTimeout(()=> showRadio("Threshold Logistics: Standard contract issued. Package signature detected nearby."), 1500);
+  setTimeout(()=> showSubtitle("Threshold Logistics: Standard contract issued. Package signature detected nearby.", 4000), 1500);
+  if(!isMobile){
+    glCanvas.requestPointerLock();
+  } else {
+    lockLandscape();
+    if(document.documentElement.requestFullscreen){
+      document.documentElement.requestFullscreen().catch(()=>{});
+    }
+  }
+}
+
+function showPause(){
+  if(gameState!=='playing') return;
+  gameState = 'paused';
+  document.getElementById('screen-pause').classList.remove('hidden');
+}
+function resumeGame(){
+  document.getElementById('screen-pause').classList.add('hidden');
+  gameState = 'playing';
+  if(!isMobile) glCanvas.requestPointerLock();
+}
+
+function triggerCaught(){
+  gameState = 'lost';
+  jumpscareSound();
+  shakeScreen(0.5, 12);
+  const flash = document.getElementById('flash');
+  flash.style.transition = 'none';
+  flash.style.background = '#ff0000';
+  flash.style.opacity = '1';
+  showJumpscareOverlay(300);
+  setTimeout(()=>{
+    flash.style.transition = 'opacity 0.8s';
+    flash.style.opacity = '0';
+  }, 100);
+  document.getElementById('lost-title').textContent = 'DELIVERY INCOMPLETE';
+  document.getElementById('lost-text').textContent = 'Something in the dark had been learning the sound of your footsteps. It knew them better than you did.';
+  setTimeout(()=>{
+    document.getElementById('screen-lost').classList.remove('hidden');
+    if(document.exitPointerLock) document.exitPointerLock();
+  }, 800);
+}
+
+function triggerSanityLoss(){
+  gameState = 'lost';
+  document.getElementById('lost-title').textContent = 'LOST EMPLOYEE';
+  document.getElementById('lost-text').textContent = 'The halls stopped pretending to be real. Neither, eventually, did you.';
+  document.getElementById('screen-lost').classList.remove('hidden');
+  if(document.exitPointerLock) document.exitPointerLock();
+}
+
+function triggerWin(){
+  gameState = 'won';
+  document.getElementById('win-text').textContent = 'Contract fulfilled. Extraction successful. Threshold Logistics thanks you for your continued service. Your next shift begins whenever you are ready.';
+  document.getElementById('screen-win').classList.remove('hidden');
+  if(document.exitPointerLock) document.exitPointerLock();
+}
+
+function resetGame(){
+  location.reload();
+}
+
+document.getElementById('btn-begin').addEventListener('click', ()=>{
+  const active = document.querySelector('.diff-btn.active');
+  difficulty = active ? active.dataset.diff : 'normal';
+  startGame();
+});
+document.getElementById('btn-resume').addEventListener('click', resumeGame);
+document.getElementById('btn-restart-win').addEventListener('click', resetGame);
+document.getElementById('btn-restart-lost').addEventListener('click', resetGame);
+document.querySelectorAll('.diff-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.diff-btn').forEach(b=> b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+/* ============================================================
+   UPDATE LOOP
+   ============================================================ */
+function updatePlayer(dt){
+  player.crouching = !!keys['ControlLeft'] || !!keys['ControlRight'] || mobileCrouchToggled;
+  const wantSprint = ((!!keys['ShiftLeft'] || !!keys['ShiftRight']) || mobileSprintHeld) && stamina > 2 && !player.crouching;
+  const hasMoveInput = keys['KeyW']||keys['KeyA']||keys['KeyS']||keys['KeyD'] || Math.abs(touchMove.x)>0.1 || Math.abs(touchMove.y)>0.1;
+  player.sprinting = wantSprint && hasMoveInput;
+
+  if(player.sprinting){ stamina = Math.max(0, stamina - 26*dt); }
+  else { stamina = Math.min(100, stamina + 14*dt); }
+
+  let speed = player.crouching ? 1.7 : (player.sprinting ? 6.4 : 3.7);
+
+  camera.rotation.set(pitch, yaw, 0, 'YXZ');
+
+  const forward = new THREE.Vector3();
+  camera.getWorldDirection(forward);
+  forward.y = 0; forward.normalize();
+  const right = new THREE.Vector3().crossVectors(forward, camera.up).normalize();
+
+  const inputZ = (keys['KeyW']?1:0) - (keys['KeyS']?1:0) + touchMove.y;
+  const inputX = (keys['KeyD']?1:0) - (keys['KeyA']?1:0) + touchMove.x;
+  const moveDir = new THREE.Vector3();
+  moveDir.addScaledVector(forward, inputZ);
+  moveDir.addScaledVector(right, inputX);
+  const moveLen = moveDir.length();
+  const moving = moveLen > 0.02;
+  if(moving){
+    if(moveLen > 1) moveDir.divideScalar(moveLen);
+    player.pos.x += moveDir.x*speed*dt;
+    player.pos.z += moveDir.z*speed*dt;
+    distanceWalked += speed*dt;
+  }
+  resolveCollision(player.pos, PLAYER_RADIUS);
+
+  const targetHeight = player.crouching ? CROUCH_HEIGHT : EYE_HEIGHT;
+  player.height += (targetHeight - player.height) * Math.min(1, dt*8);
+  camera.position.set(player.pos.x, player.height, player.pos.z);
+
+  // apply rumble offset if active
+  if(activeEvent && activeEvent.type === 'rumble' && activeEvent._rumbleIntensity){
+    camera.position.x += (Math.random()-0.5)*activeEvent._rumbleIntensity;
+    camera.position.z += (Math.random()-0.5)*activeEvent._rumbleIntensity;
+  }
+
+  // footsteps
+  footstepTimer -= dt;
+  if(moving && footstepTimer<=0){
+    footstepSound();
+    footstepTimer = player.crouching ? 0.55 : (player.sprinting ? 0.28 : 0.42);
+    // spawn echo ring on minimap
+    footstepRings.push({
+      x: player.pos.x, z: player.pos.z,
+      radius: 0, maxRadius: player.sprinting ? 12 : (player.crouching ? 4 : 8),
+      opacity: player.sprinting ? 0.5 : (player.crouching ? 0.15 : 0.3)
+    });
+  }
+
+  // flashlight follow
+  flashlightSpot.position.set(camera.position.x, camera.position.y, camera.position.z);
+  const lookTarget = new THREE.Vector3();
+  camera.getWorldDirection(lookTarget);
+  flashlightTarget.position.set(camera.position.x+lookTarget.x, camera.position.y+lookTarget.y, camera.position.z+lookTarget.z);
+  flashlightSpot.intensity = flashlightOn && battery>0 ? 2.1 : 0;
+
+  // battery
+  if(flashlightOn && battery>0){
+    battery = Math.max(0, battery - 3.2*dt);
+    if(battery<=0){ flashlightOn=false; showRadio("Battery depleted."); }
+  }
+
+  // battery pickups
+  batteryPickups.forEach(b=>{
+    if(!b.collected && player.pos.distanceTo(b.pos) < 1.2){
+      b.collected = true;
+      battery = Math.min(100, battery + 45);
+      scene.remove(b.mesh); scene.remove(b.light);
+      showRadio("Battery pack acquired.");
+    }
+  });
+
+  // sanity
+  const distToEntity = entity ? entity.pos.distanceTo(player.pos) : 999;
+  let sanityDelta = -0.4; // base drain
+  if(!flashlightOn) sanityDelta -= 1.6;
+  if(distToEntity < 14) sanityDelta -= 2.0;
+  else if(flashlightOn) sanityDelta += 0.9;
+  sanity = Math.max(0, Math.min(100, sanity + sanityDelta*dt));
+  if(sanity <= 0){ triggerSanityLoss(); }
+  if(sanity < 35 && Math.random() < dt*0.4) whisperSound();
+  if(sanity < 25 && Math.random() < dt*0.6) heartbeatSound();
+
+  // shadow entity spawn (first time sanity drops below 30)
+  if(!shadowSpawned && sanity < 30){
+    spawnShadowEntity();
+  }
+
+  // entity proximity distortion intensity (for visual/audio effects)
+  const proxDist = entity ? entity.pos.distanceTo(player.pos) : 999;
+  const targetProxIntensity = proxDist < 12 ? Math.max(0, 1 - proxDist/12) : 0;
+  entityProximityIntensity += (targetProxIntensity - entityProximityIntensity) * Math.min(1, dt*4);
+
+  // proximity heartbeat
+  if(entity && proxDist < 20 && Math.random() < dt * (1.5 - proxDist/20)){
+    heartbeatProximitySound();
+  }
+
+  // dynamic event system
+  if(!activeEvent){
+    eventTimer -= dt;
+    if(eventTimer <= 0){
+      const roll = Math.random();
+      if(roll < 0.4){
+        activeEvent = { type:'darkness', timer: 3 + Math.random()*1.5, startTime: performance.now() };
+        scene.fog = new THREE.FogExp2(0x000000, 0.12);
+        ambientLight.intensity = 0.04;
+        playNoiseBurst(2, 0.06, 80, 0);
+      } else if(roll < 0.7){
+        activeEvent = { type:'rumble', timer: 0.3, startTime: performance.now() };
+        playNoiseBurst(0.4, 0.08, 60, 0);
+      } else {
+        activeEvent = { type:'scream', timer: 0.8, startTime: performance.now() };
+        playNoiseBurst(0.6, 0.3, 1800, 0);
+        sanity = Math.max(0, sanity - 5);
+      }
+      eventTimer = 25 + Math.random()*20;
+    }
+  } else {
+    activeEvent.timer -= dt;
+    if(activeEvent.type === 'rumble'){
+      // rumble is applied after camera position is set in updatePlayer
+      activeEvent._rumbleIntensity = 0.15 * (1 - activeEvent.timer/0.3);
+    }
+    if(activeEvent.timer <= 0){
+      if(activeEvent.type === 'darkness'){
+        scene.fog = new THREE.FogExp2(0x141006, 0.052);
+        ambientLight.intensity = 0.18;
+      }
+      activeEvent = null;
+    }
+  }
+
+  // ambient tone region variation
+  const cellI = Math.floor((player.pos.x / CELL) + (GRID-1)/2);
+  const cellJ = Math.floor((player.pos.z / CELL) + (GRID-1)/2);
+  const region = (cellI < GRID/2 ? 'W' : 'E') + (cellJ < GRID/2 ? 'N' : 'S');
+  if(region !== currentDroneRegion){
+    currentDroneRegion = region;
+    const offsets = { 'NW':[-2,1], 'NE':[2,-1], 'SW':[1,3], 'SE':[-1,-2] };
+    const [o1, o2] = offsets[region] || [0,0];
+    if(droneOscs[0]) droneOscs[0].frequency.value = 42 + o1;
+    if(droneOscs[1]) droneOscs[1].frequency.value = 47 + o2;
+  }
+
+  // exit check
+  if(delivered && player.pos.distanceTo(exitPos) < 1.3){
+    triggerWin();
+  }
+
+  // beacon timer
+  if(beaconActive){
+    beaconActive.timeLeft -= dt;
+    if(beaconActive.timeLeft <= 0){
+      scene.remove(beaconActive.mesh); scene.remove(beaconActive.light);
+      beaconActive = null;
+    }
+  }
+
+  // entity spawn timer
+  if(!entitySpawned){
+    entitySpawnTimer -= dt;
+    if(entitySpawnTimer<=0) spawnEntity();
+  }
+
+  // difficulty curve: slight speed increase over time
+  const elapsed = performance.now()/1000 - gameStartTime;
+  const timeMultiplier = 1.0 + Math.min(0.4, elapsed / 300);
+  if(entity){
+    entity._timeMultiplier = timeMultiplier;
+  }
+
+  // doorway proximity scare
+  doorwayScareCooldown -= dt;
+  if(entity && doorwayScareCooldown <= 0 && entity.state === 'hunting'){
+    const toEnt = new THREE.Vector3(entity.pos.x - player.pos.x, 0, entity.pos.z - player.pos.z);
+    const dist = toEnt.length();
+    if(dist < 5 && dist > 1.5){
+      const dir = toEnt.normalize();
+      const forward = new THREE.Vector3();
+      camera.getWorldDirection(forward);
+      forward.y = 0; forward.normalize();
+      const angle = forward.angleTo(dir);
+      if(angle < 0.25){
+        const raycaster = new THREE.Raycaster(camera.position, new THREE.Vector3(entity.pos.x-camera.position.x, 0, entity.pos.z-camera.position.z).normalize(), 0.5, dist-0.5);
+        const hits = raycaster.intersectObjects(wallMeshes, false);
+        if(hits.length > 0){
+          doorwayScareCooldown = 12 + Math.random()*15;
+          jumpscareSound();
+          showJumpscareOverlay(100);
+          shakeScreen(0.2, 4);
+          showSubtitle("Something is standing right on the other side of this wall.", 2500);
+          sanity = Math.max(0, sanity - 8);
+        }
+      }
+    }
+  }
+
+  // flashlight dust overlay intensity
+  const dustEl = document.getElementById('flashlight-dust');
+  const dustOpacity = flashlightOn && battery > 0 ? 0.06 + entityProximityIntensity * 0.08 : 0;
+  dustEl.style.opacity = dustOpacity;
+
+  // camera FOV distortion from entity proximity
+  const targetFov = 75 + entityProximityIntensity * 4;
+  camera.fov += (targetFov - camera.fov) * Math.min(1, dt*3);
+  camera.updateProjectionMatrix();
+
+  // prompt text
+  updatePromptUI();
+}
+
+function updatePromptUI(){
+  const prompt = document.getElementById('prompt');
+  let text = '';
+  if(!pickupCollected && player.pos.distanceTo(pickupPos) < 1.8) text = isMobile ? 'TAP E TO PICK UP PACKAGE' : 'PRESS E TO PICK UP PACKAGE';
+  else if(hasPackage && !delivered && player.pos.distanceTo(deliveryPos) < 2.0) text = isMobile ? 'TAP E TO DELIVER PACKAGE' : 'PRESS E TO DELIVER PACKAGE';
+  else if(delivered && player.pos.distanceTo(exitPos) < 4.5) text = 'STEP ONTO THE EXTRACTION PAD';
+  if(text){ prompt.textContent = text; prompt.style.opacity = '1'; }
+  else { prompt.style.opacity = '0'; }
+}
+
+function updateFlickerLights(dt){
+  flickerLights.forEach(f=>{
+    f.timer -= dt;
+    if(f.timer<=0){
+      if(Math.random()<0.15){
+        f.flickerState = !f.flickerState;
+        f.timer = f.flickerState ? (0.05+Math.random()*0.15) : (1+Math.random()*3);
+      } else {
+        f.timer = 1.5+Math.random()*3;
+      }
+    }
+    const target = f.flickerState ? f.baseIntensity : f.baseIntensity*0.05;
+    f.light.intensity += (target - f.light.intensity)*Math.min(1,dt*10);
+    f.fixture.material.color.setScalar(0.5 + (f.light.intensity/f.baseIntensity)*0.5);
+  });
+}
+
+function updateHUD(){
+  document.getElementById('battery-val').textContent = Math.round(battery)+'%';
+  document.getElementById('battery-bar').style.width = battery+'%';
+  document.getElementById('battery-bar').classList.toggle('danger', battery<20);
+
+  document.getElementById('sanity-val').textContent = Math.round(sanity)+'%';
+  document.getElementById('sanity-bar').style.width = sanity+'%';
+  document.getElementById('sanity-bar').classList.toggle('danger', sanity<35);
+
+  document.getElementById('stamina-val').textContent = Math.round(stamina)+'%';
+  document.getElementById('stamina-bar').style.width = stamina+'%';
+
+  document.getElementById('inv-pkg').textContent = hasPackage ? 'CARRIED' : (delivered ? 'DELIVERED' : 'NOT CARRIED');
+  document.getElementById('inv-status').textContent = delivered ? 'AWAITING EXTRACTION' : 'EMPLOYED';
+
+  // sanity visual distortion + entity proximity vignette
+  const dangerLevel = sanity < 40 ? (40-sanity)/40 : 0;
+  const proxVignette = entityProximityIntensity * 0.6;
+  let huntPulse = 0;
+  if(entity && entity.state === 'hunting'){
+    const huntCycle = (performance.now() % 2000) / 2000;
+    huntPulse = Math.sin(huntCycle * Math.PI * 2) * 0.15 * (1 + entityProximityIntensity);
+  }
+  const totalVignette = Math.max(dangerLevel, proxVignette) + huntPulse;
+  document.getElementById('noise-overlay').style.opacity = (Math.max(dangerLevel, proxVignette*0.5)*0.35 + huntPulse*0.2).toFixed(2);
+  const vignetteSpread = 160 - totalVignette*80;
+  const vignetteBlur = 50 + totalVignette*40;
+  const vignetteRed = Math.round(dangerLevel*120 + proxVignette*40 + huntPulse*60);
+  const vignetteGreen = Math.round(proxVignette*20);
+  const vignetteAlpha = (0.8 + totalVignette*0.2).toFixed(2);
+  document.getElementById('vignette').style.boxShadow = `inset 0 0 ${vignetteSpread}px ${vignetteBlur}px rgba(${vignetteRed},${vignetteGreen},0,${vignetteAlpha})`;
+  const jitter = dangerLevel>0.3 ? `hue-rotate(${(Math.random()-0.5)*dangerLevel*30}deg) contrast(${1+dangerLevel*0.3})` : 'none';
+  glCanvas.style.filter = jitter;
+}
+
+function drawMinimap(dt){
+  const canvas = document.getElementById('minimap');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,150,150);
+  const scale = 150/(GRID*CELL+CELL);
+  const cx = 75, cz = 75;
+  ctx.strokeStyle = 'rgba(217,179,92,0.55)';
+  ctx.lineWidth = 1;
+  const jitter = sanity<30 ? (Math.random()-0.5)*4 : 0;
+  wallSegments.forEach(seg=>{
+    ctx.beginPath();
+    ctx.moveTo(cx+seg.x1*scale+jitter, cz+seg.z1*scale);
+    ctx.lineTo(cx+seg.x2*scale+jitter, cz+seg.z2*scale);
+    ctx.stroke();
+  });
+  // markers
+  function dot(pos,color,r){
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(cx+pos.x*scale, cz+pos.z*scale, r, 0, Math.PI*2); ctx.fill();
+  }
+  if(!pickupCollected) dot(pickupPos, '#66ccff', 3);
+  if(hasPackage && !delivered) dot(deliveryPos, '#66ccff', 3);
+  if(delivered) dot(exitPos, '#33ff77', 3.5);
+  if(shadowEntity) dot(shadowEntity.pos, '#8844aa', 2.5);
+  loreNotes.forEach(n=>{ if(!n.collected) dot(n.pos, '#88aaff', 2); });
+  if(packageDropMesh && packageDropPos) dot(packageDropPos, '#66ccff', 2.5);
+
+  if(entity && entity.pos.distanceTo(player.pos) < 6){
+    const pulse = 0.3 + Math.sin(performance.now()*0.01)*0.2;
+    ctx.strokeStyle = `rgba(255,0,0,${pulse.toFixed(2)})`;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(0, 0, 150, 150);
+  }
+
+  if(sanity < 15 && entity){
+    fakeEchoEntities.forEach(fake=>{
+      const age = (performance.now() - fake.born) / 1000;
+      if(age > 2){ fake.dead = true; return; }
+      const alpha = Math.max(0, 0.3 - age*0.15);
+      dot(fake.pos, `rgba(255,50,50,${alpha.toFixed(2)})`, 2);
+    });
+    fakeEchoEntities = fakeEchoEntities.filter(f=>!f.dead);
+    if(Math.random() < dt * 0.5){
+      const offset = 3 + Math.random()*6;
+      const angle = Math.random()*Math.PI*2;
+      fakeEchoEntities.push({
+        pos: new THREE.Vector3(entity.pos.x + Math.cos(angle)*offset, 0, entity.pos.z + Math.sin(angle)*offset),
+        born: performance.now()
+      });
+    }
+  }
+
+  // footstep echo rings
+  for(let i=footstepRings.length-1; i>=0; i--){
+    const ring = footstepRings[i];
+    const expandRate = ring.maxRadius / 0.5; // expand over 0.5s
+    ring.radius += expandRate * dt;
+    ring.opacity -= (ring.opacity / 0.5) * dt;
+    if(ring.opacity <= 0 || ring.radius > ring.maxRadius){
+      footstepRings.splice(i, 1);
+      continue;
+    }
+    ctx.strokeStyle = `rgba(217,179,92,${ring.opacity.toFixed(2)})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx+ring.x*scale, cz+ring.z*scale, ring.radius*scale, 0, Math.PI*2);
+    ctx.stroke();
+  }
+
+  // battery warning indicator
+  if(battery < 20){
+    const blink = Math.sin(performance.now()*0.008) > 0 ? 1 : 0.3;
+    ctx.fillStyle = `rgba(193,75,58,${blink})`;
+    ctx.fillRect(6, 6, 12, 18);
+    ctx.fillStyle = `rgba(193,75,58,${blink})`;
+    ctx.fillRect(8, 8, 8, Math.max(2, (battery/20)*14));
+  }
+
+  // player arrow (larger, with outline for visibility)
+  ctx.save();
+  ctx.translate(cx+player.pos.x*scale, cz+player.pos.z*scale);
+  ctx.rotate(-yaw);
+  ctx.fillStyle = '#ffe08a';
+  ctx.strokeStyle = '#1a1400';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(0, -7);
+  ctx.lineTo(5, 6);
+  ctx.lineTo(0, 3);
+  ctx.lineTo(-5, 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  if(gameState==='playing'){
+    updatePlayer(dt);
+    updateEntity(dt);
+    updateShadowEntity(dt);
+    updateFlickerLights(dt);
+    updateHUD();
+    drawMinimap(dt);
+  }
+  renderer.render(scene, camera);
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+setupScene();
+setupTouchControls();
+clock = new THREE.Clock();
+animate();
+
+})();
+</script>
+</body>
+</html>

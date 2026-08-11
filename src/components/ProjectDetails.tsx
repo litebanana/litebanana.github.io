@@ -114,6 +114,40 @@ export default function ProjectDetails({ project, open, onClose }: ProjectDetail
         <div className="px-6 py-6 sm:px-8 sm:py-8">
           <ProjectVisual kind={project.visual} accent={project.accent} name={project.name} />
 
+          {/* Playable demo — embedded right in the modal */}
+          {project.links?.demo && (
+            <div className="mt-6">
+              <div className="flex items-center justify-between gap-3">
+                <h4 className="font-display text-sm font-bold uppercase tracking-wider text-ink dark:text-white">
+                  ▶ Play it live
+                </h4>
+                <a
+                  href={project.links.demo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-accent-deep hover:underline dark:text-accent-bright"
+                >
+                  Open full screen
+                  <ExternalIcon className="h-3.5 w-3.5" />
+                </a>
+              </div>
+              <div className="mt-2.5 overflow-hidden rounded-2xl border-2 border-ink/10 bg-[#0e0a1c] shadow-card dark:border-white/10">
+                <iframe
+                  src={project.links.demo}
+                  title={`Play ${project.name}`}
+                  loading="lazy"
+                  allow="fullscreen"
+                  tabIndex={-1}
+                  className="block h-[420px] w-full sm:h-[500px]"
+                />
+              </div>
+              <p className="mt-2 text-xs font-bold text-ink-faint dark:text-slate-500">
+                Click inside the game to give it keyboard controls. Progress saves in your
+                browser.
+              </p>
+            </div>
+          )}
+
           {/* Overview */}
           {!isPlaceholder(project.overview) && (
             <Section label="Overview">

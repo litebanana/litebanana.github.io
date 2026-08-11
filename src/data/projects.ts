@@ -97,7 +97,10 @@ export const PROJECTS: Project[] = [
     visual: "game",
     accent: "#64748B",
     tech: ["HTML", "CSS", "JavaScript"],
-    links: { repo: "https://github.com/litebanana/backroom-game" },
+    links: {
+      repo: "https://github.com/litebanana/backroom-game",
+      demo: "/games/backroom/",
+    },
     overview:
       "The Backroom Game is a short horror exploration experience built around the feeling of being lost in an endless, dimly lit corridor. The player walks, explores, and searches for the exit while the atmosphere does the scaring.",
     problem:
@@ -175,6 +178,10 @@ export const PROJECTS: Project[] = [
     visual: "game",
     accent: "#7C3AED",
     tech: ["HTML", "CSS", "JavaScript"],
+    links: {
+      repo: "https://github.com/litebanana/voidrun",
+      demo: "/games/voidrun/",
+    },
     overview:
       "VOID//RUN is a fast, readable dungeon roguelite with a pixel-art aesthetic rendered natively at full HD. You are Black Rabbit, a dungeon delver who falls into a corrupted dungeon and must fight waves of monsters, level up with build-defining upgrades, and break THE NULL WARDEN in a multi-phase boss fight.",
     problem:

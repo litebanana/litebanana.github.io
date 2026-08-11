@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID//RUN</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌀</text></svg>">
+</head>
+<body>
+<div id="game-wrap">
+  <canvas id="game"></canvas>
+</div>
+
+<!-- ============ UI OVERLAYS ============ -->
+<div id="ui-root" class="hidden">
+
+  <!-- MAIN MENU -->
+  <div id="menu" class="overlay">
+    <div class="menu-bg"></div>
+    <div class="menu-content">
+      <h1 class="logo">VOID<span class="slash">//</span>RUN</h1>
+      <p class="tagline">Descend the dungeon. Escape the void.</p>
+      <div class="menu-buttons">
+        <button id="btn-play" class="btn btn-primary">▶ PLAY</button>
+        <button id="btn-daily" class="btn">📅 DAILY RUN</button>
+        <button id="btn-customize" class="btn">🎨 CUSTOMIZE</button>
+        <button id="btn-upgrades" class="btn">VOID SHARDS</button>
+        <button id="btn-achievements" class="btn">🏆 ACHIEVEMENTS</button>
+        <button id="btn-codex" class="btn">📖 CODEX</button>
+        <button id="btn-leaderboard" class="btn">🏁 LEADERBOARD</button>
+        <button id="btn-settings" class="btn">SETTINGS</button>
+        <button id="btn-credits" class="btn">CREDITS</button>
+        <button id="btn-quit" class="btn btn-danger">QUIT</button>
+      </div>
+      <div id="menu-shards" class="menu-shards">💠 <span id="menu-shards-val">0</span> VOID SHARDS</div>
+      <div class="menu-version">v1.0 — a Freebuff original</div>
+    </div>
+  </div>
+
+  <!-- WEAPON SELECT -->
+  <div id="weapon-select" class="overlay hidden">
+    <div class="panel">
+      <h2>CHOOSE YOUR WEAPON</h2>
+      <p class="sub">Black Rabbit is fully equipped. Pick your primary.</p>
+      <div id="weapon-cards" class="cards-row"></div>
+      <div id="diff-picker" class="diff-picker"></div>
+      <button id="btn-start-run" class="btn btn-primary">⚡ ENTER THE ARENA</button>
+    </div>
+  </div>
+
+  <!-- LEVEL UP -->
+  <div id="levelup" class="overlay hidden">
+    <div class="panel">
+      <h2 class="lu-title">LEVEL UP</h2>
+      <p class="sub">Choose an upgrade</p>
+      <div id="upgrade-cards" class="cards-row"></div>
+    </div>
+  </div>
+
+  <!-- PAUSE -->
+  <div id="pause" class="overlay hidden">
+    <div class="panel">
+      <h2>PAUSED</h2>
+      <div class="menu-buttons">
+        <button id="btn-resume" class="btn btn-primary">RESUME</button>
+        <button id="btn-pause-settings" class="btn">SETTINGS</button>
+        <button id="btn-restart" class="btn">RESTART RUN</button>
+        <button id="btn-quit-menu" class="btn btn-danger">MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMIZE -->
+  <div id="customize" class="overlay hidden">
+    <div class="panel panel-wide">
+      <h2>RABBIT CUSTOMIZATION</h2>
+      <p class="sub">Personalize Black Rabbit — saved between runs</p>
+      <div class="cust-layout">
+        <div class="cust-preview">
+          <canvas id="cust-canvas" width="230" height="230"></canvas>
+          <div class="cust-preview-tip">LIVE PREVIEW</div>
+        </div>
+        <div class="cust-controls">
+          <div class="cust-section">
+            <div class="cust-label">EAR STYLE</div>
+            <div id="cust-shapes" class="shape-row"></div>
+          </div>
+          <div class="cust-section">
+            <div class="cust-label">APPEARANCE COLORS</div>
+            <div id="cust-colors"></div>
+          </div>
+        </div>
+      </div>
+      <div class="menu-buttons">
+        <button id="btn-cust-reset" class="btn">RESET</button>
+        <button id="btn-cust-back" class="btn btn-primary">DONE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="settings" class="overlay hidden">
+    <div class="panel">
+      <h2>SETTINGS</h2>
+      <div class="settings-grid">
+        <label>Master Volume <input id="set-master" type="range" min="0" max="100" value="80"></label>
+        <label>Music Volume <input id="set-music" type="range" min="0" max="100" value="70"></label>
+        <label>SFX Volume <input id="set-sfx" type="range" min="0" max="100" value="90"></label>
+        <label>Screen Shake <input id="set-shake" type="checkbox"></label>
+        <label>Damage Numbers <input id="set-dmg" type="checkbox"></label>
+        <label>Fullscreen <input id="set-fullscreen" type="checkbox"></label>
+      </div>
+      <div class="menu-buttons">
+        <button id="btn-settings-back" class="btn btn-primary">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- META SHOP -->
+  <div id="shop" class="overlay hidden">
+    <div class="panel panel-wide">
+      <h2>VOID SHARDS</h2>
+      <p class="sub">Permanent progression — <span id="shop-shards" class="accent">0</span> shards available</p>
+      <div id="shop-list" class="shop-list"></div>
+      <div class="menu-buttons">
+        <button id="btn-shop-back" class="btn btn-primary">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER / VICTORY -->
+  <div id="end-screen" class="overlay hidden">
+    <div class="panel">
+      <h2 id="end-title">RUN TERMINATED</h2>
+      <p id="end-sub" class="sub"></p>
+      <div id="end-stats" class="stats-grid"></div>
+      <p id="end-shards" class="end-shards">💠 +<span id="end-shards-val">0</span> VOID SHARDS</p>
+      <div class="menu-buttons">
+        <button id="btn-retry" class="btn btn-primary">RETRY</button>
+        <button id="btn-end-menu" class="btn">MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REWARD ROOM -->
+  <div id="reward" class="overlay hidden">
+    <div class="panel">
+      <h2>REWARD</h2>
+      <p class="sub">The void offers a boon. Choose one.</p>
+      <div id="reward-cards" class="cards-row"></div>
+    </div>
+  </div>
+
+  <!-- BRANCH CHOICE -->
+  <div id="branch" class="overlay hidden">
+    <div class="panel">
+      <h2>CHOOSE YOUR PATH</h2>
+      <p class="sub">The dungeon forks — pick the next room</p>
+      <div id="branch-cards" class="cards-row"></div>
+    </div>
+  </div>
+
+  <!-- RUN SHOP -->
+  <div id="rshop" class="overlay hidden">
+    <div class="panel">
+      <h2>DUNGEON MERCHANT</h2>
+      <p class="sub">Gold is worthless down here — spend it while it lasts. You have <span id="rshop-gold" class="accent">0</span> gold</p>
+      <div id="rshop-list" class="shop-list"></div>
+      <div class="menu-buttons">
+        <button id="btn-rshop-depart" class="btn btn-primary">DEPART</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div id="achievements" class="overlay hidden">
+    <div class="panel panel-wide">
+      <h2>ACHIEVEMENTS</h2>
+      <p class="sub"><span id="ach-count" class="accent">0 / 0</span> unlocked — each grants Void Shards</p>
+      <div id="ach-list" class="ach-list"></div>
+      <div class="menu-buttons">
+        <button id="btn-ach-back" class="btn btn-primary">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODEX -->
+  <div id="codex" class="overlay hidden">
+    <div class="panel panel-wide">
+      <h2>CODEX</h2>
+      <p class="sub">Every foe and weapon you encounter is logged here</p>
+      <div id="codex-tabs" class="codex-tabs"></div>
+      <div id="codex-list" class="codex-list"></div>
+      <div class="menu-buttons">
+        <button id="btn-codex-back" class="btn btn-primary">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="leaderboard" class="overlay hidden">
+    <div class="panel panel-wide">
+      <h2>LEADERBOARD</h2>
+      <p class="sub">Daily run results — same seed, best time wins</p>
+      <div id="lb-best" class="lb-best"></div>
+      <div id="lb-list" class="lb-list"></div>
+      <div class="menu-buttons">
+        <button id="btn-lb-back" class="btn btn-primary">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TUTORIAL -->
+  <div id="tutorial" class="overlay tutorial-overlay hidden">
+    <div class="tutorial-box">
+      <h2>FIELD MANUAL</h2>
+      <div id="tutorial-body">
+        <div class="tut-row"><span class="key">WASD</span> move</div>
+        <div class="tut-row"><span class="key">MOUSE</span> aim</div>
+        <div class="tut-row"><span class="key">LMB</span> fire</div>
+        <div class="tut-row"><span class="key">SPACE / SHIFT</span> dash (grants brief invulnerability)</div>
+        <div class="tut-row"><span class="key">Q / RMB</span> NOVA — costs 25 mana</div>
+        <div class="tut-row"><span class="key">2</span> drink potion · <span class="key">3</span> throw bomb</div>
+        <div class="tut-row"><span class="key">E</span> open chests · <span class="key">ESC</span> pause</div>
+        <div class="tut-note">Destroy enemies → collect <span class="xp-chip">GOLD</span> → level up → pick upgrades.</div>
+        <div class="tut-note">Survive all rooms. Defeat <span class="boss-chip">THE NULL WARDEN</span>.</div>
+      </div>
+      <button id="btn-tutorial" class="btn btn-primary">DEPLOY</button>
+    </div>
+  </div>
+
+  <!-- CREDITS -->
+  <div id="credits" class="overlay hidden">
+    <div class="panel">
+      <h2>CREDITS</h2>
+      <p class="sub">VOID//RUN v1.0</p>
+      <p>A complete 2D roguelite arena built from scratch with zero external dependencies.</p>
+      <p>Code, design, art, and sound: generated procedurally by an AI coding agent.</p>
+      <div class="menu-buttons">
+        <button id="btn-credits-back" class="btn btn-primary">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="hint-bar" class="hidden"></div>
+  <div id="boss-banner" class="hidden"></div>
+  <div id="wave-banner" class="hidden"></div>
+</div>
+
+<!-- ============ SCRIPTS (classic, ordered) ============ -->
+<script src="js/util.js"></script>
+<script src="js/pixel.js"></script>
+<script src="js/input.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/save.js"></script>
+<script src="js/data/weapons.js"></script>
+<script src="js/data/enemies.js"></script>
+<script src="js/data/upgrades.js"></script>
+<script src="js/data/meta.js"></script>
+<script src="js/data/difficulties.js"></script>
+<script src="js/data/relics.js"></script>
+<script src="js/data/achievements.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/entities/projectile.js"></script>
+<script src="js/entities/player.js"></script>
+<script src="js/entities/enemy.js"></script>
+<script src="js/entities/boss.js"></script>
+<script src="js/arena.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
