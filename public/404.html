@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F6FAFD" />
+    <meta name="robots" content="noindex" />
+    <meta
+      name="description"
+      content="404 — this page doesn't exist. Head back to Dominic Torres' portfolio."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <script>
+      // Apply the saved/system theme before first paint to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          var dark = t ? t === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>404 — Page Not Found | Dominic Torres</title>
+    <style>
+      :root {
+        --paper: #f6fafd;
+        --ink: #16213e;
+        --ink-soft: #33415c;
+        --ink-faint: #64748b;
+        --accent: #0ea5e9;
+        --accent-deep: #0284c7;
+        --border: rgba(22, 33, 62, 0.1);
+      }
+      .dark {
+        --paper: #0b1220;
+        --ink: #ffffff;
+        --ink-soft: #cbd5e1;
+        --ink-faint: #94a3b8;
+        --accent: #38bdf8;
+        --accent-deep: #38bdf8;
+        --border: rgba(255, 255, 255, 0.1);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        color-scheme: light;
+      }
+      html.dark {
+        color-scheme: dark;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        background-color: var(--paper);
+        color: var(--ink);
+        overflow: hidden;
+      }
+      .wrap {
+        text-align: center;
+        padding: 2rem;
+        max-width: 34rem;
+      }
+      .code {
+        font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+        font-size: clamp(6rem, 22vw, 11rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        background: linear-gradient(120deg, var(--accent), var(--accent-deep));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: drift 6s ease-in-out infinite;
+      }
+      @keyframes drift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+      h1 {
+        margin-top: 1.25rem;
+        font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      p {
+        margin-top: 0.75rem;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ink-soft);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        padding: 0.85rem 1.75rem;
+        border-radius: 0.75rem;
+        background: var(--accent);
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        box-shadow: 0 12px 24px -10px rgba(2, 132, 199, 0.45);
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        background: var(--accent-deep);
+      }
+      .meta {
+        margin-top: 2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-faint);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="code" aria-hidden="true">404</div>
+      <h1>This page wandered into the void.</h1>
+      <p>
+        It looks like this link doesn&apos;t exist (or it got deleted while you
+        weren&apos;t looking). No problem — the way back is right here.
+      </p>
+      <a class="btn" href="/">← Back to home</a>
+      <p class="meta">Dominic Torres · Developer • QA Tester</p>
+    </main>
+  </body>
+</html>
