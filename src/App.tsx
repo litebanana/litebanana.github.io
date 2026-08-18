@@ -8,6 +8,9 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import BackToTop from "./components/BackToTop";
+import TechMarquee from "./components/TechMarquee";
+import ScrollProgress from "./components/ScrollProgress";
+import CursorGlow from "./components/CursorGlow";
 
 export default function App() {
   return (
@@ -19,13 +22,19 @@ export default function App() {
         Skip to content
       </a>
 
+      <ScrollProgress />
+      <CursorGlow />
+
       <Navbar />
 
       <main id="main">
         <Hero />
 
+        <TechMarquee />
+
         <Section
           id="projects"
+          index={1}
           eyebrow="Projects"
           title="Things I've built"
           description="A few of my recent projects. Browse the carousel with the arrows, the dots, your keyboard arrows, or a swipe."

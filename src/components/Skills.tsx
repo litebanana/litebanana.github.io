@@ -7,6 +7,7 @@ export default function Skills() {
   return (
     <Section
       id="skills"
+      index={3}
       eyebrow="Technical Experience"
       title="What I work with"
       description="Years of hands-on experience with the tools I use — not percentages, just the time I've actually spent building."

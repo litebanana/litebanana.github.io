@@ -11,6 +11,7 @@ export default function Experience() {
   return (
     <Section
       id="experience"
+      index={2}
       eyebrow="Experience"
       title="Where I've been learning"
       description="My professional experience so far — hands-on QA on a real product, plus hands-on IoT training."

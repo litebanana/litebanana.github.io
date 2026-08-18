@@ -8,6 +8,8 @@ interface SectionProps {
   description?: string;
   children: ReactNode;
   className?: string;
+  /** Positional number shown before the eyebrow (e.g. 1 → "01"). */
+  index?: number;
 }
 
 /** Consistent section shell: eyebrow label, big title, optional description. */
@@ -18,13 +20,21 @@ export default function Section({
   description,
   children,
   className = "",
+  index,
 }: SectionProps) {
   return (
     <section id={id} className={`relative py-20 sm:py-28 ${className}`}>
       <div className="container-site">
         <Reveal className="mb-10 sm:mb-14">
           <div className="mb-3 flex items-center gap-3">
-            <span className="h-[3px] w-9 rounded-full bg-accent" aria-hidden="true" />
+            {index !== undefined && (
+              <>
+                <span className="font-display text-sm font-bold tabular-nums text-accent-deep dark:text-accent-bright">
+                  {String(index).padStart(2, "0")}
+                </span>
+                <span className="h-[3px] w-6 rounded-full bg-accent/50" aria-hidden="true" />
+              </>
+            )}
             <span className="text-[11px] font-extrabold uppercase tracking-[0.28em] text-accent-deep dark:text-accent-bright">
               {eyebrow}
             </span>

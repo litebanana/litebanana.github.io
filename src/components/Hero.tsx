@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import TechBackdrop from "./TechBackdrop";
 import { ArrowRightIcon, GithubIcon, LinkedinIcon, MailIcon } from "./Icons";
@@ -5,6 +6,34 @@ import { LINKS, SITE } from "../data/links";
 
 function scrollTo(href: string) {
   document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+}
+
+// Roles cycle through Dominic's real focus areas. Keep the first entry as the
+// primary role — it's what shows on load and for reduced-motion visitors.
+const ROLES = ["Computer Science Student", "Software Developer", "QA Tester", "AI / ML Enthusiast"];
+
+/**
+ * Rotating role headline. The active word crossfades/slides in via the keyed
+ * `animate-fade-up` class; the global reduced-motion rule collapses the
+ * animation to an instant swap.
+ */
+function RotatingRole() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % ROLES.length), 2800);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <p className="mt-6 font-display text-2xl font-semibold text-ink-soft sm:text-3xl dark:text-slate-200">
+      <span className="inline-block h-[1.25em] overflow-hidden align-bottom">
+        <span key={index} className="block animate-fade-up text-accent-deep dark:text-accent-bright">
+          {ROLES[index]}
+        </span>
+      </span>
+    </p>
+  );
 }
 
 const HERO_STATS = [
@@ -39,12 +68,19 @@ export default function Hero() {
             </p>
 
             <h1 className="mt-8 font-display text-5xl font-bold leading-[1.04] tracking-tight text-ink sm:text-6xl xl:text-7xl dark:text-white">
-              Hi, I&apos;m <span className="text-accent">Dominic.</span>
+              <span className="inline-block animate-fade-up">Hi,</span>{" "}
+              <span className="inline-block animate-fade-up" style={{ animationDelay: "90ms" }}>
+                I&apos;m
+              </span>{" "}
+              <span
+                className="inline-block animate-fade-up bg-gradient-to-r from-accent to-accent-deep bg-clip-text text-transparent dark:from-accent-bright dark:to-accent"
+                style={{ animationDelay: "180ms" }}
+              >
+                Dominic.
+              </span>
             </h1>
 
-            <p className="mt-6 font-display text-2xl font-semibold text-ink-soft sm:text-3xl dark:text-slate-200">
-              {SITE.role}
-            </p>
+            <RotatingRole />
             <p className="mt-3 text-sm font-semibold tracking-wide text-ink-faint sm:text-base dark:text-slate-400">
               {SITE.tagline}
             </p>

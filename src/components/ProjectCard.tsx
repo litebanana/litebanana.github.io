@@ -1,3 +1,4 @@
+import { useEffect, useRef, type CSSProperties } from "react";
 import type { Project } from "../data/projects";
 import ProjectVisual from "./ProjectVisual";
 import { ArrowRightIcon, ExternalIcon, GithubIcon, PencilIcon } from "./Icons";
@@ -9,16 +10,71 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, active, onOpen }: ProjectCardProps) {
+  const cardRef = useRef<HTMLElement | null>(null);
+  const settingsRef = useRef({ reduced: false, coarse: false });
   const hasPlaceholders = project.description.startsWith("[");
+
+  useEffect(() => {
+    settingsRef.current = {
+      reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+      coarse: window.matchMedia("(pointer: coarse)").matches,
+    };
+  }, []);
+
+  /** Return the card to its resting transform (also covers slide transitions). */
+  const resetTransform = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.transform = active ? "scale(1)" : "scale(0.94)";
+    el.style.transition = "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, box-shadow 0.3s ease";
+  };
+
+  // Reset the inline transform whenever the active state flips, so a card
+  // that was hovered mid-slide never keeps a stale tilt/scale.
+  useEffect(() => {
+    resetTransform();
+  }, [active]);
+
+  /** Mouse-tracked 3D tilt + spotlight position (skipped for touch/reduced motion). */
+  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
+    const el = cardRef.current;
+    if (!el || settingsRef.current.reduced || settingsRef.current.coarse) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.setProperty("--mx", `${(px + 0.5) * 100}%`);
+    el.style.setProperty("--my", `${(py + 0.5) * 100}%`);
+    el.style.transform = `perspective(1100px) rotateX(${(-py * 6).toFixed(2)}deg) rotateY(${(px * 6).toFixed(2)}deg) scale(${active ? 1 : 0.94})`;
+    el.style.transition = "transform 0.09s ease-out";
+  };
+
   return (
     <article
+      ref={cardRef}
+      onMouseMove={handleMove}
+      onMouseLeave={resetTransform}
       aria-hidden={!active}
-      className={`mx-auto flex h-full w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-card transition-all duration-500 dark:border-white/10 dark:bg-[#131D30] ${
+      style={
+        {
+          "--glow": project.accent,
+          "--glow-soft": `${project.accent}59`,
+        } as CSSProperties
+      }
+      className={`group relative mx-auto flex h-full w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-card transition-all duration-500 hover:border-[color:var(--glow)] hover:shadow-[0_28px_80px_-20px_var(--glow-soft),0_0_0_1px_var(--glow-soft)] dark:border-white/10 dark:bg-[#131D30] ${
         active
           ? "scale-100 opacity-100"
           : "pointer-events-none scale-[0.94] opacity-40"
       }`}
     >
+      {/* Mouse-follow spotlight tint over the whole card */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{
+          background: "radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(56, 189, 248, 0.07), transparent 65%)",
+        }}
+      />
+
       <ProjectVisual kind={project.visual} accent={project.accent} name={project.name} />
 
       <div className="flex flex-1 flex-col p-6 sm:p-8">

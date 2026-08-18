@@ -81,6 +81,10 @@ export default {
           "0%, 100%": { opacity: "0.25", transform: "scale(0.7)" },
           "50%": { opacity: "1", transform: "scale(1.1)" },
         },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         floaty: "floaty 5s ease-in-out infinite",
@@ -93,6 +97,7 @@ export default {
         "fade-up": "fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "spin-slow": "spinSlow 22s linear infinite",
         sparkle: "sparkle 2.6s ease-in-out infinite",
+        marquee: "marquee 30s linear infinite",
       },
     },
   },

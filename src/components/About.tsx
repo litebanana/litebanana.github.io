@@ -7,7 +7,7 @@ import { CERTIFICATIONS, EDUCATION, SOFT_SKILLS } from "../data/about";
 
 export default function About() {
   return (
-    <Section id="about" eyebrow="About Me" title="About Me" className="bg-white dark:bg-[#0E1726]">
+    <Section id="about" index={4} eyebrow="About Me" title="About Me" className="bg-white dark:bg-[#0E1726]">
       <Reveal>
         <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-ink/10 bg-paper shadow-card dark:border-white/10 dark:bg-[#0E1726]">
           <div className="grid md:grid-cols-[0.85fr_1.15fr]">

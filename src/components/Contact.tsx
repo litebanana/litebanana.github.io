@@ -1,13 +1,45 @@
+import { useEffect, useRef, useState } from "react";
 import Section from "./Section";
 import Reveal from "./Reveal";
 import { Mascot } from "./Character";
-import { GithubIcon, LinkedinIcon, MailIcon } from "./Icons";
+import { CopyIcon, GithubIcon, LinkedinIcon, MailIcon } from "./Icons";
+import { CheckIcon } from "./DetailIcons";
 import { LINKS } from "../data/links";
 
 export default function Contact() {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  async function copyEmail() {
+    const text = LINKS.email;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // Fallback for non-secure contexts / older browsers.
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => setCopied(false), 2000);
+  }
+
   return (
     <Section
       id="contact"
+      index={5}
       eyebrow="Contact"
       className="overflow-hidden"
     >
@@ -58,9 +90,25 @@ export default function Contact() {
               </a>
             </div>
 
-            <p className="mt-6 text-xs font-semibold text-ink-faint dark:text-slate-500">
-              {LINKS.location} · {LINKS.email} · {LINKS.phone}
-            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs font-semibold text-ink-faint dark:text-slate-500">
+              <span>{LINKS.location}</span>
+              <span aria-hidden="true">·</span>
+              <button
+                type="button"
+                onClick={copyEmail}
+                aria-live="polite"
+                className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-white/80 px-3.5 py-1.5 font-bold text-ink-soft transition-all hover:-translate-y-0.5 hover:border-accent hover:text-accent-deep active:scale-95 dark:border-white/15 dark:bg-white/5 dark:text-slate-300 dark:hover:border-accent dark:hover:text-accent-bright"
+              >
+                {copied ? (
+                  <CheckIcon className="h-3.5 w-3.5 text-emerald-500" />
+                ) : (
+                  <CopyIcon className="h-3.5 w-3.5" />
+                )}
+                {copied ? "Email copied!" : LINKS.email}
+              </button>
+              <span aria-hidden="true">·</span>
+              <span>{LINKS.phone}</span>
+            </div>
           </div>
         </div>
       </Reveal>
